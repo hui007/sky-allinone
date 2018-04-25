@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.sky</groupId>
-	<artifactId>movie-allinone</artifactId>
+	<artifactId>allinone</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>sky-movie-allinone</name>
-	<description>一个大而全的工程</description>
+	<name>sky-allinone</name>
+	<description>一个大而全的工程，不考虑微服务什么的，纯属练手</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
