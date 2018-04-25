@@ -1,0 +1,18 @@
+#mybatis.config-locations=classpath:mybatis/mybatis-config.xml/
+ 
+spring:
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bookshop?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: cpusky
+  profiles:
+    active: mybatis,dataSource
+
+logging:
+  config: classpath:log4j2.xml
+
+#mybatisSpring.driverClassName = com.mysql.jdbc.Driver
+#mybatisSpring.url = jdbc:mysql://localhost:3306/bookshop?useUnicode=true&characterEncoding=utf-8
+#mybatisSpring.username = root
+#mybatisSpring.password = cpusky

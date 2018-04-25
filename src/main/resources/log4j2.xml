@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="INFO" monitorInterval="1800" shutdownHook="disable">
+<!-- 需要配置系统属性：
+-Dorg.springframework.boot.logging.LoggingSystem=org.springframework.boot.logging.log4j2.Log4J2LoggingSystem 
+同时在pom.xml里排除掉spring-boot-starter-logging，以便使用log4j
+-->
+	<appenders>
+		<Console name="Console" target="SYSTEM_OUT" follow="true">
+			<PatternLayout
+				pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
+		</Console>
+		<Console name="StudentMapperConsole" target="SYSTEM_OUT" follow="true">
+			<PatternLayout
+				pattern="ddd %date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
+		</Console>
+	</appenders>
+
+	<loggers>
+		<logger name="com.sky.movie" level="info"></logger>
+		<logger name="com.sky.movie.mybatisSpring.data.UserMapper1" level="TRACE">
+			<appender-ref ref="StudentMapperConsole" />
+		</logger>
+		<root level="info">
+			<appender-ref ref="Console" />
+		</root>
+	</loggers>
+
+</configuration>
