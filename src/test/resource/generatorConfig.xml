@@ -23,11 +23,11 @@
 		   <property name="rootClass" value="com.sky.movie.mybatisGen.domain.BaseEntity"/>
 		</javaModelGenerator>
 			
-		<sqlMapGenerator targetPackage="com.sky.movie.mybatisGen.data" targetProject="src/main/java" />
-		<javaClientGenerator targetPackage="com.sky.movie.mybatisGen.data"
+		<sqlMapGenerator targetPackage="com.sky.movie.mybatisGen.data.mapper" targetProject="src/main/java" />
+		<javaClientGenerator targetPackage="com.sky.movie.mybatisGen.data.mapper"
 			targetProject="src/main/java" type="XMLMAPPER" />
 
-		<table tableName="acc_roleresource" domainObjectName="AccRoleresource">
+		<table tableName="book" domainObjectName="Book">
 			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
 		</table>
 		<!-- 
