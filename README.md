@@ -1,2 +1,9 @@
 # sky-allinone
-三位老板，welcome！
+已实现功能：
+mybatis单独启动：MybatisAloneTest
+mybatis集成spring：MybatisSpringTest、MybatisSpringJavaConfigTest、MybatisSpringEnableTest
+mybatis集成spring boot：MybatisSpringBootTest
+mybatis多数据源动态切换：MybatisSpringBootMultiDSTest
+mybatis Common mapper方式：MybatisSpringBootCommonMapperTest
+mybatis自动生成代码：MybatisGenTest
+mybatis所有功能测试入口类：SuiteTest
