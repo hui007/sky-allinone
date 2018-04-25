@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<!-- 通过spring boot的configuration类引入这个xml文件。兼容遗留项目、引入jar里的类 -->
+
+	<!-- <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+	</bean> -->
+
+	<bean id="studentMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.sky.movie.mybatis.data.StudentMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<!-- 
+		使用 SqlSession的两种方式：
+		可以通过这个bean获取mybatis的SqlSession，进行自定义的事务编程控制等；
+		或者实现SqlSessionDaoSupport类，调 用 getSqlSession()方法你会得到一个 SqlSessionTemplate。
+		
+		使用这种方式的缺点：
+		事务问题：不会参与到spring事务中，或者参与，但是事务嵌套的话，可能报错
+		线程安全性问题：线程不安全，如果注入到bean里边，可能会引起问题
+		关闭连接：必须要在finally里关闭
+		
+		可以通过以下代码进行编程式事务控制
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+		
+		TransactionStatus status = txManager.getTransaction(def);
+		try {
+		  userMapper.insertUser(user);
+		}
+		catch (MyException ex) {
+		  txManager.rollback(status);
+		  throw ex;
+		}
+		txManager.commit(status);
+	 -->
+	<!-- <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+	  <constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean> -->
+
+	<!-- <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<property name="driverClassName" value="${mybatisSpring.driverClassName}" />
+		<property name="url" value="${mybatisSpring.url.sampdb}" />
+		<property name="username" value="${mybatisSpring.username.sampdb}" />
+		<property name="password" value="${mybatisSpring.password.sampdb}" />
+
+		<property name="maxActive" value="20" />
+		<property name="initialSize" value="1" />
+		<property name="maxWait" value="60000" />
+		<property name="minIdle" value="1" />
+
+		<property name="validationQuery" value="SELECT 1" /> 验证连接是否成功, SQL SELECT 指令至少要返回一行 (测试/验证连接池连接的SQL语句也因数据库而异)
+		<property name="testOnBorrow" value="false" /> 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+		<property name="testOnReturn" value="false" /> 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+		<property name="minEvictableIdleTimeMillis" value="300000" /> 配置一个连接在池中最小生存的时间，单位是毫秒
+		建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+		<property name="testWhileIdle" value="true" />
+		配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+		<property name="timeBetweenEvictionRunsMillis" value="30000" />
+		<property name="maxOpenPreparedStatements" value="20" />要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。
+		是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql5.5以下的版本中没有PSCache功能，建议关闭掉。5.5及以上版本有PSCache，建议开启。
+		<property name="poolPreparedStatements" value="true" />
+		指定每个PSCache连接上PSCache的大小
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+			value="20" />
+
+		配置监控统计拦截的filters 去掉后监控界面sql无法统计 开启web监控、开启sql防火墙
+		<property name="filters" value="stat,wall"></property>
+	</bean> -->
+
+	<!-- 开启事务注解驱动 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- <bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="transactionInterceptor"
+		class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		事务拦截器需要依赖注入一个事务管理器
+		<property name="transactionManager" ref="transactionManager" />
+		定义事务传播属性
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean> -->
+</beans>
