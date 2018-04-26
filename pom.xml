@@ -28,6 +28,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
+			<!-- 使用log4j2。还需引入spring-boot-starter-log4j2、修改配置文件指定使用log4j2 -->
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
@@ -68,6 +69,15 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
+		
+		<!-- 内存数据库 -->
+		<dependency>
+	      <groupId>org.hsqldb</groupId>
+	      <artifactId>hsqldb</artifactId>
+	      <version>2.4.0</version>
+	      <!-- 并不是使用maven test来测试的，而是直接手动运行junit测试，所以这里去掉test scope -->
+	      <!-- <scope>test</scope> -->
+	    </dependency>
 		
 		<!-- Mybatis Generator -->
 		<dependency>
