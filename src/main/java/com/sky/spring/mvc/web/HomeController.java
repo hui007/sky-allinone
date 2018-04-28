@@ -3,24 +3,31 @@ package com.sky.spring.mvc.web;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sky.mybatis.mybatisSpringBootCommonMapper.domain.GradeEvent;
 import com.sky.mybatis.mybatisSpringBootCommonMapper.service.CommonMapperService;
+import com.sky.spring.SpringMvcTest;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Controller
 @RequestMapping({"/", "/homepage"})
 public class HomeController {
+	Logger logger = LoggerFactory.getLogger(HomeController.class);
+	
 	@Autowired
 	private CommonMapperService commonMapperService;
 	
@@ -95,6 +102,15 @@ public class HomeController {
 	 */
 	@RequestMapping(value="testValidate", method=POST) 
 	public String testValidate(@Valid GradeEvent gradeEvent, Errors errors) {
+//		errors.getAllErrors().stream().forEach(new Consumer<ObjectError>() {
+//
+//			@Override
+//			public void accept(ObjectError t) {
+//				logger.warn("getObjectName:{}, getDefaultMessage:{}", t.getObjectName(), t.getDefaultMessage());
+//			}
+//		});
+		errors.getAllErrors().stream().forEach(t -> logger.warn("getObjectName:{}, getDefaultMessage:{}", t.getObjectName(), t.getDefaultMessage()));
+		
 		if (errors.hasErrors()) {
 			return "saveGradeEvent";
 		}
