@@ -70,6 +70,12 @@
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 		
+		<!-- spirng mvc -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		
 		<!-- 内存数据库 -->
 		<dependency>
 	      <groupId>org.hsqldb</groupId>
