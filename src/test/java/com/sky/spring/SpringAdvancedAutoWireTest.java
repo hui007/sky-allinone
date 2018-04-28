@@ -28,8 +28,8 @@ import com.sky.spring.advancedAutoWire.MagicQualifier;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AutoWireConfiguration.class})
 @ActiveProfiles("dev")
-public class AdvancedAutoWireTest {
-	Logger logger = LoggerFactory.getLogger(AdvancedAutoWireTest.class);
+public class SpringAdvancedAutoWireTest {
+	Logger logger = LoggerFactory.getLogger(SpringAdvancedAutoWireTest.class);
 	@Autowired
 	Environment env;
 	@Autowired(required = false)

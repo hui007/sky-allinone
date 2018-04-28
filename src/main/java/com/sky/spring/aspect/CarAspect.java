@@ -12,7 +12,8 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.dao.DataAccessException;
 
 /**
- * 有几个点需要注意：可以拦截抛出的特定异常、可以校验输入参数、通过注解引入新功能（动态添加新接口功能，针对jar包里的类很有效）
+ * 有几个点需要注意：可以拦截抛出的特定异常、可以校验输入参数、通过注解引入新功能（动态添加新接口功能，针对jar包里的类很有效）、
+ * 		以及切面间执行的顺序问题（order注解）
  * @author joshui
  *
  */
