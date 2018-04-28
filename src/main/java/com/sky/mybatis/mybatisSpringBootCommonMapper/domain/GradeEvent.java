@@ -14,8 +14,9 @@ public class GradeEvent {
 	private String eventId;
 	@DateTimeFormat(pattern="yyyyMMdd")
 	private Date date;
-	@NotNull
-	@Size(min=1, max=10)
+	@NotNull(message="{gradeEvent.category.notNull}")
+	@Size(min=1, max=10, message="{gradeEvent.category.size}")
+//	@Size(min=1, max=10, message="category长度不对")
 	private String category;
 
 	public Date getDate() {
