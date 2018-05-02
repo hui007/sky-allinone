@@ -4,24 +4,38 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sky.mybatis.mybatisSpringBootCommonMapper.domain.GradeEvent;
 import com.sky.mybatis.mybatisSpringBootCommonMapper.service.CommonMapperService;
 import com.sky.spring.SpringMvcTest;
+import com.sky.spring.mvc.exception.CommonException;
+import com.sky.spring.mvc.exception.MethodException;
+import com.sky.spring.mvc.exception.NotAccepableException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 
 @Controller
 @RequestMapping({"/", "/homepage"})
@@ -116,5 +130,79 @@ public class HomeController {
 		}
 		
 		return "redirect:/showGradeEventInfo/" + gradeEvent.getEventId();
+	}
+	
+	/**
+	 * 也可以使用@requestPart注解拿到byte[]，不过这种方式比较原始；
+	 * 在处理使用代码段传递过来的文件时，这个注解比较有用，如@RequestPart("meta-data") MetaData metadata, @RequestPart("file-data") MultipartFile file
+	 * @param file
+	 * @param copyToPath
+	 * @param request
+	 * @return
+	 */
+	@PostMapping(path="fileUpload")
+	public String fileUpload(@RequestParam("file") MultipartFile file, @RequestParam("copyToPath") String copyToPath, HttpServletRequest request) {
+		try {
+			file.transferTo(new File(copyToPath + File.separator + file.getOriginalFilename()));
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		}
+		
+		return "uploadSuccess";
+	}
+	
+	/**
+	 * 处理异常的几种方式：
+	 * 特定的spring异常会映射会指定的http状态码；
+	 * 异常上添加@ResponseStatus，映射为http状态码；
+	 * 在方法上添加@ExceptionHandler，用来处理异常
+	 * @return
+	 */
+	@GetMapping(path = "handlerException", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public String handlerException(@RequestParam Map<String, String> params) {
+		if (params.containsKey("throwNotAccepableException")) {
+			throw new NotAccepableException();
+		}
+		if (params.containsKey("throwMethodException")) {
+			throw new MethodException();
+		}
+		if (params.containsKey("throwCommonException")) {
+			throw new CommonException();
+		}
+		
+		return "handlerSuccess";
+	}
+	
+	@ExceptionHandler(MethodException.class)
+	public String handlerMethodException() {
+		
+		return "dealedMethodException";
+	}
+	
+	/**
+	 * 本来想用Model传递过去的，结果报错，只能使用RedirectAttributes来传递了
+	 * @param model
+	 * @param redirectAttributes
+	 * @return
+	 */
+	@GetMapping(path = "redirectBefore")
+	public String redirectBefore(Model model, RedirectAttributes redirectAttributes) {
+		model.addAttribute("from", "sky");
+		model.addAttribute("to", "you");
+		
+		redirectAttributes.addAttribute("from", "sky");
+		redirectAttributes.addAttribute("to", "you");
+		redirectAttributes.addFlashAttribute(new GradeEvent()); //flash属性可以存放复杂对象，这个复杂对象会自动放入session中
+		
+		// to参数会作为查询参数传递过去 ?to=you
+		return "redirect:/redirectAfter/{from}";
+	}
+	
+	@GetMapping(path = "redirectAfter/{from}")
+//	@RequestMapping(value="redirectAfter/{from}", method=GET) 
+	public String redirectAfter(@PathVariable String from, @RequestParam String to) {
+		logger.info("from:{}, to:{}", from, to);
+		
+		return "redirectAfter";
 	}
 }
