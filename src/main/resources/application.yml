@@ -11,6 +11,15 @@ spring:
   output:
     ansi:
       enabled: always
+  http:
+      multipart:
+        location: /Users/jianghui/Downloads/temp-del
+debug: false
+server:
+  jsp-servlet:
+    init-parameters:
+      a: 1
+      b: 2
 
 #https://docs.spring.io/spring-boot/docs/1.4.7.RELEASE/reference/htmlsingle/#boot-features-logging 26章
 #显式切换日志组件，默认是logback，logback的配置文件在spring发行包里是自带的，可以使用属性或者xml文件调整logback的配置

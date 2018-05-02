@@ -12,9 +12,11 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Profile("testSpringMvc")
 @Configuration
-@EnableWebMvc
+//@EnableWebMvc
 @ComponentScan("com.sky.spring.mvc.web")
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class WebConfig 
+//extends WebMvcConfigurerAdapter 
+{
 	/**
 	 * jsp视图解析器
 	 * 
@@ -33,8 +35,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	/*
 	 * 静态资源处理。将静态资源转发到默认的servlet容器默认的servlet上
 	 */
-	@Override
-	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-		configurer.enable();
-	}
+//	@Override
+//	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+//		configurer.enable();
+//	}
 }
