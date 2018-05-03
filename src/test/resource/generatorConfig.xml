@@ -26,11 +26,11 @@
 		<sqlMapGenerator targetPackage="com.sky.movie.mybatisGen.data.mapper" targetProject="src/main/java" />
 		<javaClientGenerator targetPackage="com.sky.movie.mybatisGen.data.mapper"
 			targetProject="src/main/java" type="XMLMAPPER" />
-
+		<!--
 		<table tableName="book" domainObjectName="Book">
 			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
 		</table>
-		<!-- 
+		 
 		<table tableName="acc_user" domainObjectName="AccUser">
 			<generatedKey column="id" sqlStatement="Mysql" identity="false" />
 		</table>
