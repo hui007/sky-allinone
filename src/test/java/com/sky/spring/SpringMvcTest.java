@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 import java.io.File;
 import java.util.Arrays;
 
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,6 +58,11 @@ public class SpringMvcTest {
 	@Autowired
 	MultipartProperties multipartProperties;
 	RestTemplate restTemplate = new RestTemplate();
+	
+	@BeforeClass
+	public static void init() {
+		System.setProperty("security.basic.authorize-mode", "none");
+	}
 	
 	/**
 	 * 这个测试方法，可以完全不使用SpringMvcTest类上的注解
