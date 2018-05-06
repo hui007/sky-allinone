@@ -163,6 +163,7 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.0.8</version>
+			<!-- useSSL问题，把mysql驱动设个版本可以解决，或者是加上useSSl-false -->
 			</dependency>
 		<!-- mybatis不整合spring end -->
 	</dependencies>
