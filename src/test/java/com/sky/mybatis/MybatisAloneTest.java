@@ -62,7 +62,7 @@ public class MybatisAloneTest {
 		properties.setProperty("driver", "com.mysql.jdbc.Driver");
 		properties.setProperty("url", "jdbc:mysql://localhost:3306/bookshop?useUnicode=true&characterEncoding=utf-8");
 		properties.setProperty("username", "root");
-		properties.setProperty("password", "cpusky");
+		properties.setProperty("password", "admin");
 		PooledDataSourceFactory pooledDataSourceFactory = new PooledDataSourceFactory();
 		pooledDataSourceFactory.setProperties(properties);
 		DataSource dataSource = pooledDataSourceFactory.getDataSource();

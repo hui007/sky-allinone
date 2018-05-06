@@ -68,10 +68,10 @@ public class MybatisSpringTest {
 	@Test
 	public void sqlSessionFactoryWithoutXML() throws IOException {
 		Properties properties = new Properties();
-		properties.setProperty("driver", env.getProperty("mybatisSpring.driverClassName"));
-		properties.setProperty("url", env.getProperty("mybatisSpring.url"));
-		properties.setProperty("username", env.getProperty("mybatisSpring.username"));
-		properties.setProperty("password", env.getProperty("mybatisSpring.password"));
+		properties.setProperty("driver", env.getProperty("datasource.driverClassName"));
+		properties.setProperty("url", env.getProperty("master.datasource.url"));
+		properties.setProperty("username", env.getProperty("master.datasource.username"));
+		properties.setProperty("password", env.getProperty("master.datasource.password"));
 		PooledDataSourceFactory pooledDataSourceFactory = new PooledDataSourceFactory();
 		pooledDataSourceFactory.setProperties(properties);
 		DataSource dataSource = pooledDataSourceFactory.getDataSource();
