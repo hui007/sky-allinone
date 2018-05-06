@@ -29,7 +29,7 @@ import com.github.pagehelper.PageInterceptor;
 
 @Configuration
 //@Import({SampleMasterDataSourceConfig.class, SampleClusterDataSourceConfig.class})
-@PropertySource("classpath:/application-dataSource-multi.properties")
+@PropertySource("classpath:/application-dataSource.properties")
 @ComponentScan({"com.sky.mybatis.mybatisSpringBootCommonMapper", "com.sky.mybatis.mybatisMultiDataSource"})
 public class SampleDynamicDataSourceConfig {
 //	@Autowired
@@ -52,7 +52,7 @@ public class SampleDynamicDataSourceConfig {
 	@Value("${master.datasource.password}")
 	private String password;
 
-	@Value("${master.datasource.driverClassName}")
+	@Value("${datasource.driverClassName}")
 	private String driverClass;
 	
 	@Value("${cluster.datasource.url}")
@@ -64,7 +64,7 @@ public class SampleDynamicDataSourceConfig {
 	@Value("${cluster.datasource.password}")
 	private String password1;
 
-	@Value("${cluster.datasource.driverClassName}")
+	@Value("${datasource.driverClassName}")
 	private String driverClass1;
 
 	@Bean(name = "clusterDataSource")
