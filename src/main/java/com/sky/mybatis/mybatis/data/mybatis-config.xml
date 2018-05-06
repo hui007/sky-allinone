@@ -4,7 +4,7 @@
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 	<!-- 优先级由低到高：这里的、属性文件的、api方法调用时传递的 -->
-	<properties resource="com/sky/mybatis/mybatis/properties/application-mybatisSrping.properties">
+	<properties resource="application-dataSource.properties">
 		<property name="username" value="dev_user" />
 		<property name="password" value="F2Fa3!33TYyg" />
 		<property
@@ -18,21 +18,21 @@
 		<environment id="development">
 			<transactionManager type="JDBC" />
 			<dataSource type="POOLED">
-				<property name="driver" value="${mybatisSpring.driverClassName}" />
+				<property name="driver" value="${datasource.driverClassName}" />
 				<property name="url"
-					value="${mybatisSpring.url:jdbc:mysql://localhost:3306/bookshop?useUnicode=true&amp;characterEncoding=utf-8}" />
-				<property name="username" value="${mybatisSpring.username}" />
-				<property name="password" value="${mybatisSpring.password}" />
+					value="${master.datasource.url}" />
+				<property name="username" value="${master.datasource.username}" />
+				<property name="password" value="${master.datasource.password}" />
 			</dataSource>
 		</environment>
 		<environment id="sampdb">
 			<transactionManager type="JDBC" />
 			<dataSource type="POOLED">
-				<property name="driver" value="${mybatisSpring.driverClassName}" />
+				<property name="driver" value="${datasource.driverClassName}" />
 				<property name="url"
-					value="${mybatisSpring.url.sampdb:jdbc:mysql://localhost:3306/sampdb?useUnicode=true&amp;characterEncoding=utf-8}" />
-				<property name="username" value="${mybatisSpring.username.sampdb}" />
-				<property name="password" value="${mybatisSpring.password.sampdb}" />
+					value="${cluster.datasource.url}" />
+				<property name="username" value="${cluster.datasource.username}" />
+				<property name="password" value="${cluster.datasource.password}" />
 			</dataSource>
 		</environment>
 	</environments>
