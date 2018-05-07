@@ -71,6 +71,7 @@ public class MybatisAloneTest {
 		properties.setProperty("url", props.getProperty("master.datasource.url"));
 		properties.setProperty("username", props.getProperty("master.datasource.username"));
 		properties.setProperty("password", props.getProperty("master.datasource.password"));
+		
 		PooledDataSourceFactory pooledDataSourceFactory = new PooledDataSourceFactory();
 		pooledDataSourceFactory.setProperties(properties);
 		DataSource dataSource = pooledDataSourceFactory.getDataSource();
