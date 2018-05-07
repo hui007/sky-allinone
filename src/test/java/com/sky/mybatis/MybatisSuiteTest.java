@@ -7,6 +7,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({MybatisAloneTest.class,MybatisSpringEnableTest.class,MybatisSpringJavaConfigTest.class
 	, MybatisSpringTest.class, MybatisSpringBootTest.class, MybatisSpringBootMultiDSTest.class,
 	MybatisSpringBootCommonMapperTest.class, MybatisGenTest.class})  
-public class SuiteTest {
+public class MybatisSuiteTest {
 
 }

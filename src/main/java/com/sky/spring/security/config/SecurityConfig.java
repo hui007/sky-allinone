@@ -51,7 +51,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
+		http.formLogin() // 打开默认的登录验证功能
+			.and()
+			.authorizeRequests()
 			// 除了ant风格之外，还可以使用正则表达式的风格
 			.antMatchers("/getGradeEvents", "/getGradeEventsList").authenticated()
 			// 规则会按照顺序发挥作用。所以具体的路径放前面，而不具体的路径放后面
