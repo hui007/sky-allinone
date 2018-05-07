@@ -17,6 +17,9 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import com.sky.mybatis.mybatis.data.StudentMapper;
 import com.sky.mybatis.mybatis.data.UserMapper1;
@@ -58,11 +61,16 @@ public class MybatisAloneTest {
 	 */
 	@Test
 	public void sqlSessionFactoryWithoutXML() throws IOException {
+		
+		
+		Resource resource = new ClassPathResource("application-dataSource.properties");  
+        Properties props = PropertiesLoaderUtils.loadProperties(resource);  
+        
 		Properties properties = new Properties();
-		properties.setProperty("driver", "com.mysql.jdbc.Driver");
-		properties.setProperty("url", "jdbc:mysql://localhost:3306/bookshop?useUnicode=true&characterEncoding=utf-8");
-		properties.setProperty("username", "bookshopadm");
-		properties.setProperty("password", "bookshopdb");
+		properties.setProperty("driver", props.getProperty("datasource.driverClassName"));
+		properties.setProperty("url", props.getProperty("master.datasource.url"));
+		properties.setProperty("username", props.getProperty("master.datasource.username"));
+		properties.setProperty("password", props.getProperty("master.datasource.password"));
 		PooledDataSourceFactory pooledDataSourceFactory = new PooledDataSourceFactory();
 		pooledDataSourceFactory.setProperties(properties);
 		DataSource dataSource = pooledDataSourceFactory.getDataSource();
