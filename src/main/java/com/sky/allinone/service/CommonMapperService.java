@@ -16,16 +16,13 @@
 package com.sky.allinone.service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.sky.mybatis.mybatis.data.StudentMapper;
-import com.sky.mybatis.mybatisMultiDataSource.config.ds.DS;
-import com.sky.mybatis.mybatisSpringBootCommonMapper.data.GradeEventMapper;
-import com.sky.mybatis.mybatisSpringBootCommonMapper.domain.GradeEvent;
+import com.sky.allinone.conf.DS;
+import com.sky.allinone.dao.entity.GradeEvent;
+import com.sky.allinone.dao.mapper.GradeEventMapper;
 
 @Service
 public class CommonMapperService {

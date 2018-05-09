@@ -1,4 +1,4 @@
-package com.sky.mybatis.mybatisMultiDataSource.config.ds;
+package com.sky.allinone.conf;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
