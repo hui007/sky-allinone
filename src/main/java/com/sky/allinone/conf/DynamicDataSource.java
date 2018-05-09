@@ -1,4 +1,4 @@
-package com.sky.mybatis.mybatisMultiDataSource.config.ds;
+package com.sky.allinone.conf;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
