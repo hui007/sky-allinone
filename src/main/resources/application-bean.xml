@@ -12,10 +12,10 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean> -->
 
-	<bean id="studentMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	<!-- <bean id="studentMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.sky.movie.mybatis.data.StudentMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
-	</bean>
+	</bean> -->
 	
 	<!-- 
 		使用 SqlSession的两种方式：
@@ -77,7 +77,7 @@
 	</bean> -->
 
 	<!-- 开启事务注解驱动 -->
-	<tx:annotation-driven transaction-manager="transactionManager" />
+	<!-- <tx:annotation-driven transaction-manager="transactionManager" /> -->
 
 	<!-- <bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

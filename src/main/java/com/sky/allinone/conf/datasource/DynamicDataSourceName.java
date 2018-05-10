@@ -1,4 +1,4 @@
-package com.sky.allinone.conf;
+package com.sky.allinone.conf.datasource;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Target({
         ElementType.METHOD
 })
-public @interface DS {
+public @interface DynamicDataSourceName {
     String value() default "masterDataSource";
 }
