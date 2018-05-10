@@ -31,6 +31,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,12 +42,15 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.sky.allinone.dao.entity.GradeEvent;
+import com.sky.allinone.mvc.config.WebConfig;
 import com.sky.allinone.mvc.controller.HomeController;
+import com.sky.allinone.security.config.SecurityConfig;
 import com.sky.allinone.service.CommonMapperService;
 
 @RunWith(SpringRunner.class)
 /*这个注解不会启动整个springboot应用，只会扫描spring mvc相关的注解类
-@WebMvcTest({HomeController.class})*/
+@WebMvcTest({HomeController.class})
+@Import(WebConfig.class)*/
 @SpringBootTest
 @AutoConfigureMockMvc
 public class SpringMvcTest {

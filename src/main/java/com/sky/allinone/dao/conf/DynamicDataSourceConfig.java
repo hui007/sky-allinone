@@ -68,7 +68,6 @@ public class DynamicDataSourceConfig {
 	}
 
 	@Bean(name = "masterDataSource")
-//	@Primary
 	public DataSource masterDataSource() {
 		DruidDataSource dataSource = new DruidDataSource();
 		dataSource.setDriverClassName(driverClass);
