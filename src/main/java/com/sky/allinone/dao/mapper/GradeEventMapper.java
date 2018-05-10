@@ -5,8 +5,8 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.sky.allinone.conf.datasource.DynamicDataSourceName;
 import com.sky.allinone.dao.CustomBaseMapper;
+import com.sky.allinone.dao.conf.DynamicDataSourceName;
 import com.sky.allinone.dao.entity.GradeEvent;
 import com.sky.allinone.dao.entity.User;
 

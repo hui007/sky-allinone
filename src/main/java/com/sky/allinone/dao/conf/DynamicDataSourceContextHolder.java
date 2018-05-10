@@ -1,4 +1,4 @@
-package com.sky.allinone.conf.datasource;
+package com.sky.allinone.dao.conf;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

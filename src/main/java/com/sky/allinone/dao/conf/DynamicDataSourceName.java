@@ -1,4 +1,4 @@
-package com.sky.allinone.conf.datasource;
+package com.sky.allinone.dao.conf;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

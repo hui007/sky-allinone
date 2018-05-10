@@ -21,7 +21,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sky.allinone.conf.datasource.DynamicDataSourceName;
+import com.sky.allinone.dao.conf.DynamicDataSourceName;
 import com.sky.allinone.dao.entity.GradeEvent;
 import com.sky.allinone.dao.entity.User;
 import com.sky.allinone.dao.mapper.GradeEventMapper;
