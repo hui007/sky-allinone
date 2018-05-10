@@ -1,4 +1,4 @@
-package com.sky.allinone;
+package com.sky.allinone.mybatis;
 
 import java.io.IOException;
 import java.sql.SQLException;

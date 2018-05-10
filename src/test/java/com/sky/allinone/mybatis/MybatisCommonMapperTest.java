@@ -1,4 +1,4 @@
-package com.sky.allinone;
+package com.sky.allinone.mybatis;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
