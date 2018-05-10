@@ -22,8 +22,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.sky.allinone.service.CommonMapperService;
 
 @RunWith(SpringRunner.class)
-/*@WebMvcTest({HomeController.class})
-@Import(SecurityConfig.class)*/
+/*
+@WebMvcTest({HomeController.class})
+@Import(SecurityConfig.class)
+*/
 @SpringBootTest
 @AutoConfigureMockMvc
 public class SpringSecurityTest {
