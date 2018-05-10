@@ -5,6 +5,9 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -19,6 +22,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 import java.io.File;
 import java.util.Arrays;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.MultipartProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -36,11 +41,15 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import com.sky.allinone.dao.conf.DynamicDataSourceConfig;
 import com.sky.allinone.dao.entity.GradeEvent;
 import com.sky.allinone.mvc.config.WebConfig;
 import com.sky.allinone.mvc.controller.HomeController;
@@ -48,11 +57,8 @@ import com.sky.allinone.security.config.SecurityConfig;
 import com.sky.allinone.service.CommonMapperService;
 
 @RunWith(SpringRunner.class)
-/*这个注解不会启动整个springboot应用，只会扫描spring mvc相关的注解类
 @WebMvcTest({HomeController.class})
-@Import(WebConfig.class)*/
-@SpringBootTest
-@AutoConfigureMockMvc
+@Import({WebConfig.class, DynamicDataSourceConfig.class})
 public class SpringMvcTest {
 	Logger logger = LoggerFactory.getLogger(SpringMvcTest.class);
 	@Autowired
@@ -119,10 +125,14 @@ public class SpringMvcTest {
 			.andExpect(redirectedUrl("/showGradeEventInfo/1"));
 	}
 	
+	/**
+	 * with(csrf())是为了通过spring security
+	 * @throws Exception
+	 */
 	@Test
 	public void testValidate() throws Exception {
 		logger.warn("javax.validation.constraints.Size.message", env.getProperty("javax.validation.constraints.Size.message"));
-		mvc.perform(post("/testValidate").param("eventId", "1").param("date", "20180428"))
+		mvc.perform(post("/testValidate").with(csrf()).param("eventId", "1").param("date", "20180428"))
 			.andExpect(forwardedUrl("/saveGradeEvent.html"));
 			
 	}
@@ -155,6 +165,7 @@ public class SpringMvcTest {
 	}
 	
 	@Test
+//	@WithMockUser
 	public void testHandlerException() throws Exception {
 		// 特定的spring异常会自动映射到指定的http状态码
 		mvc.perform(get("/handlerException").contentType(MediaType.APPLICATION_FORM_URLENCODED))

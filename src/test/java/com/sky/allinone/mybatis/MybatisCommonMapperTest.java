@@ -66,7 +66,7 @@ public class MybatisCommonMapperTest {
 		List<User> users = commonMapperService.selectUsers();
 		assertThat(users.size()).isEqualTo(2);
 		
-		// 如果直接在mapper层面想切换数据库，是做不到的
+		// 如果直接在mapper层面想切换数据库，是做不到的。貌似可以使用tk.mybatis.spring.mapper.MapperScannerConfigurer（而不是tk的MapperScan注解），在mapper层面做到动态切换
 		expectedEx.expect(BadSqlGrammarException.class);
 		gradeEventMapper.getGradeEventByPageParam(1, 1);
 	}
