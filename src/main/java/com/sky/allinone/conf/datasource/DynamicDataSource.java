@@ -1,4 +1,4 @@
-package com.sky.allinone.conf;
+package com.sky.allinone.conf.datasource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,9 +9,9 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 
 	@Override
 	protected Object determineCurrentLookupKey() {
-		log.debug("数据源为{}", DataSourceContextHolder.getDB());
+		log.debug("数据源为{}", DynamicDataSourceContextHolder.getDB());
 
-		return DataSourceContextHolder.getDB();
+		return DynamicDataSourceContextHolder.getDB();
 	}
 
 }
