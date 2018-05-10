@@ -1,4 +1,4 @@
-package com.sky.allinone.conf;
+package com.sky.allinone.conf.datasource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,22 +9,29 @@ import javax.sql.DataSource;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.github.pagehelper.PageInterceptor;
+import com.sky.allinone.dao.plugin.ExamplePlugin;
 
 @Configuration
 //@Import({SampleMasterDataSourceConfig.class, SampleClusterDataSourceConfig.class})
 @PropertySource("classpath:/application-dataSource.properties")
+@EnableConfigurationProperties(DruidSourceProperties.class)
 @ComponentScan({"com.sky.mybatis.mybatisSpringBootCommonMapper", "com.sky.mybatis.mybatisMultiDataSource"})
-public class SampleDynamicDataSourceConfig {
+public class DynamicDataSourceConfig {
+	@Autowired
+	DruidSourceProperties druidSourceProperties;
 	
 	@Value("${master.datasource.url}")
 	private String url;
@@ -72,34 +79,7 @@ public class SampleDynamicDataSourceConfig {
 		return dataSource;
 	}
 	
-	@Bean(name = "dynamicTransactionManager")
-	@Primary
-	public DataSourceTransactionManager masterTransactionManager() {
-		return new DataSourceTransactionManager(dataSource());
-	}
 
-	@Bean(name = "dynamicSqlSessionFactory")
-	@Primary
-	public SqlSessionFactory masterSqlSessionFactory()
-			throws Exception {
-		final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-		// 最好在spring配置文件里配置，这样所有的SqlSessionFactory都可能可以共享
-//		sessionFactory.setPlugins(new Interceptor[]{new PageInterceptor()});
-		sessionFactory.setTypeAliasesPackage("com.sky.mybatis.mybatis.domain");
-		sessionFactory.setDataSource(dataSource());
-		
-		// 必须的设置属性，完成插件的初始化过程。如果是xml配置的话，就可以省略这些了
-		PageInterceptor interceptor = new PageInterceptor();
-        Properties properties = new Properties();
-        interceptor.setProperties(properties);
-        sessionFactory.setPlugins(new Interceptor[]{interceptor});
-		
-		// sessionFactory.setMapperLocations(new
-		// PathMatchingResourcePatternResolver()
-		// .getResources(MasterDataSourceConfig.MAPPER_LOCATION));
-		return sessionFactory.getObject();
-	}
-	
 	/**
      * 动态数据源: 通过AOP在不同数据源之间动态切换
      * @return
@@ -123,4 +103,33 @@ public class SampleDynamicDataSourceConfig {
 
         return dynamicDataSource;
     }
+	
+	@Bean
+	@Primary
+	public DataSourceTransactionManager transactionManager() {
+		return new DataSourceTransactionManager(dataSource());
+	}
+
+	@Bean
+	@Primary
+	public SqlSessionFactory sqlSessionFactory()
+			throws Exception {
+		SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
+		sessionFactory.setDataSource(dataSource());
+		
+		// 必须得设置属性，完成插件的初始化过程。如果是xml配置的话，就可以省略这些了
+		PageInterceptor interceptor = new PageInterceptor();
+        Properties properties = new Properties();
+        properties.put("supportMethodsArguments", "true"); // 启用方法参数功能，参见com.sky.allinone.dao.mapper.UserMapper.getUserByPageParam(int, int)
+        properties.put("params", "pageNum=pageNumKey;pageSize=pageSizeKey;"); // 设置方法参数名称：覆盖默认的名称
+        interceptor.setProperties(properties);
+        sessionFactory.setPlugins(new Interceptor[]{interceptor, new ExamplePlugin()});
+		
+        // 可以使用这种方式，也可以在配置文件里配置。因为使用了动态数据源，禁用掉了DataSourceAutoConfiguration，貌似在配置文件里配置的就识别不了了
+        sessionFactory.setTypeAliasesPackage("com.sky.allinone.dao.entity");
+		sessionFactory
+				.setMapperLocations(
+						new PathMatchingResourcePatternResolver().getResources("classpath:mapper/*.xml"));
+		return sessionFactory.getObject();
+	}
 }

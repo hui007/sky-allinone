@@ -28,6 +28,15 @@ server:
 logging:
   config: classpath:log4j2.xml
 #  config: classpath:org/springframework/boot/logging/logback/base.xml
-  
-  
 
+#tk 通用mapper配置  
+#mapper:
+#  mappers:
+#    - mapper
+#  notEmpty: true
+
+#可以定义相同属性在不同profile下的不同值
+---
+spring:
+  profiles: dev
+debug: true
