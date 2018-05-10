@@ -23,6 +23,7 @@ import com.sky.allinone.dao.conf.DruidSourceProperties;
 @EnableConfigurationProperties(DruidSourceProperties.class)
 @PropertySource(value = "classpath:com/sky/allinone/advancedAutoWire/MagicProperties.properties", 
 	encoding="utf-8")
+//@AutoConfigureAfter({ WebMvcAutoConfiguration.class}) 这种注解不会起作用，这种只对xxx-starter自动配置起作用
 public class AutoWireConfiguration {
 	@Autowired
 	DruidSourceProperties druidSourceProperties;
