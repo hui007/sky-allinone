@@ -1,4 +1,4 @@
-package com.sky.allinone.conf;
+package com.sky.allinone.conf.datasource;
 
 import java.lang.reflect.Method;
 
@@ -22,7 +22,7 @@ public class DynamicDataSourceAspect {
     @Pointcut("execution(* com.sky.mybatis..*.*(..)))")  
     public void aspect() { }  
 
-	@Before("@annotation(DS)")
+	@Before("@annotation(DynamicDataSourceName)")
 //	@Before("aspect()")
 	public void beforeSwitchDS(JoinPoint point) {
 
@@ -33,14 +33,14 @@ public class DynamicDataSourceAspect {
 		String methodName = point.getSignature().getName();
 		// 得到方法的参数的类型
 		Class[] argClass = ((MethodSignature) point.getSignature()).getParameterTypes();
-		String dataSource = DataSourceContextHolder.DEFAULT_DS;
+		String dataSource = DynamicDataSourceContextHolder.DEFAULT_DS;
 		try {
 			// 得到访问的方法对象
 			Method method = className.getMethod(methodName, argClass);
 
 			// 判断是否存在@DS注解
-			if (method.isAnnotationPresent(DS.class)) {
-				DS annotation = method.getAnnotation(DS.class);
+			if (method.isAnnotationPresent(DynamicDataSourceName.class)) {
+				DynamicDataSourceName annotation = method.getAnnotation(DynamicDataSourceName.class);
 				// 取出注解中的数据源名
 				dataSource = annotation.value();
 			}
@@ -49,15 +49,15 @@ public class DynamicDataSourceAspect {
 		}
 
 		// 切换数据源
-		DataSourceContextHolder.setDB(dataSource);
+		DynamicDataSourceContextHolder.setDB(dataSource);
 
 	}
 
-	@After("@annotation(DS)")
+	@After("@annotation(DynamicDataSourceName)")
 //	@Before("aspect()")
 	public void afterSwitchDS(JoinPoint point) {
 
-		DataSourceContextHolder.clearDB();
+		DynamicDataSourceContextHolder.clearDB();
 
 	}
 }

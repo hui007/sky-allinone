@@ -15,26 +15,45 @@
  */
 package com.sky.allinone.service;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sky.allinone.conf.DS;
+import com.sky.allinone.conf.datasource.DynamicDataSourceName;
 import com.sky.allinone.dao.entity.GradeEvent;
+import com.sky.allinone.dao.entity.User;
 import com.sky.allinone.dao.mapper.GradeEventMapper;
+import com.sky.allinone.dao.mapper.UserMapper;
 
 @Service
 public class CommonMapperService {
 
-	@Autowired(required = false)
+	@Autowired
 	private GradeEventMapper gradeEventMapper;
+	@Autowired
+	private UserMapper userMapper;
 
-	@DS("clusterDataSource")
+	@DynamicDataSourceName("clusterDataSource")
 	// @Transactional
-	public List<GradeEvent> doSomeBusinessStuff() {
+	public List<GradeEvent> selectGradeEvents() {
 		List<GradeEvent> selectAll = gradeEventMapper.selectAll();
 		return selectAll;
+	}
+	
+//	@DS("masterDataSource")
+	// @Transactional
+	public List<User> selectUsers() {
+		List<User> selectAll = userMapper.selectAll();
+		return selectAll;
+	}
+	
+	public List<User> findByCustomizeSQl() {
+		User u1 = userMapper.getUser(1);
+		User u2 = userMapper.selectUser(1);
+		
+		return Arrays.asList(u1, u2);
 	}
 
 }
