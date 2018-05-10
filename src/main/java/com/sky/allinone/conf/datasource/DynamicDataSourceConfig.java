@@ -28,7 +28,6 @@ import com.sky.allinone.dao.plugin.ExamplePlugin;
 //@Import({SampleMasterDataSourceConfig.class, SampleClusterDataSourceConfig.class})
 @PropertySource("classpath:/application-dataSource.properties")
 @EnableConfigurationProperties(DruidSourceProperties.class)
-@ComponentScan({"com.sky.mybatis.mybatisSpringBootCommonMapper", "com.sky.mybatis.mybatisMultiDataSource"})
 public class DynamicDataSourceConfig {
 	@Autowired
 	DruidSourceProperties druidSourceProperties;
