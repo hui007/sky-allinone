@@ -102,6 +102,14 @@ public class DynamicDataSourceConfig {
         return dynamicDataSource;
     }
 	
+	/**
+	 * spring事务不能回滚的情况：
+	 * 1、servcie方法嵌套调用时；2、或者抛出检查异常时
+	 * 解决办法：
+	 * 针对1，可以拿到applicationContext或者aopContext里的自身的代理对象后，再继续调用嵌套的方法。
+	 * 针对2，事务管理器默认只回滚未检查异常，可以声明式的指定哪些异常回滚，哪些异常不会滚。
+	 * @return
+	 */
 	@Bean
 	@Primary
 	public DataSourceTransactionManager transactionManager() {

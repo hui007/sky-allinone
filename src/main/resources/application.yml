@@ -12,8 +12,12 @@ spring:
   http:
       multipart:
         location: /Users/jianghui/Downloads/temp-del
-debug: false
+  mvc: #mvc配置
+    view:
+      suffix: .html 
+debug: true
 server:
+  port: 8081
   jsp-servlet:
     init-parameters: #servlet启动参数
       a: 1
@@ -34,7 +38,6 @@ logging:
 #  mappers:
 #    - mapper
 #  notEmpty: true
-
 #可以定义相同属性在不同profile下的不同值
 ---
 spring:

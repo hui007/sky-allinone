@@ -73,6 +73,7 @@ public class SpringMvcTest {
 	
 	@BeforeClass
 	public static void init() {
+		// 去掉spring Security
 		System.setProperty("security.basic.authorize-mode", "none");
 	}
 	
