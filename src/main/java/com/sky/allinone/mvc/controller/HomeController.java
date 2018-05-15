@@ -14,7 +14,9 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -23,9 +25,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.InternalResourceView;
 
 import com.sky.allinone.dao.entity.GradeEvent;
 import com.sky.allinone.mvc.exception.CommonException;
@@ -42,12 +49,71 @@ public class HomeController {
 	private CommonMapperService commonMapperService;
 	
 	/**
-	 * 拦截根目录，这样就没办法通过浏览器访问static下的静态资源了
+	 * 拦截根目录，这样就没办法通过浏览器访问static下的静态资源了;
+	 * 也导致访问根目录时，不能自动跳转到index.html页面了
+	 * 
+	 * 也可以通过spring Security来做安全过滤
 	 * @return
 	 */
-	@RequestMapping(method=GET) 
+	@RequestMapping( method=GET) 
 	public String home() {
 		return "home";
+	}
+	
+	/**
+	 * 配置spring Security跳转到登录页面
+	 * 为了防止CSRF攻击，登录页面登录时必须带上csrf token，当然也可以配置spring Security去掉csrf功能
+	 * 参考DefaultLoginPageGeneratingFilter，看怎么生成默认登录页面的，见loginDefault.html
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@GetMapping(path = "/showLoginPage")
+	public String showLoginPage(@RequestParam(value="myError", required = false) String error, 
+				Model model, HttpServletRequest request) {
+		CsrfToken token = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+
+		if (token != null) {
+			model.addAttribute("csrfKey", token.getParameterName());
+			model.addAttribute("csrfValue", token.getToken());
+		}
+		
+		String viewName = "login";
+//		String viewName = "loginDefault";
+		return viewName;
+	}
+	
+	@PostMapping(path = "/showLoginPagePost")
+	public String showLoginPagePost(@RequestParam(value="myError", required = false) String error, 
+			Model model, HttpServletRequest request) {
+		
+		String viewName = "login";
+		return viewName;
+	}
+	
+//	@PostMapping(path = "/doLogin")
+	@RequestMapping(value = "/doLogin", method = {RequestMethod.GET, RequestMethod.POST})
+	public  /*ModelAndView*/ String login(@RequestParam(value="username") String userName, @RequestParam(value="password") String pw,
+			@RequestParam(value="error", required = false) String error) {
+		String viewName = "welcomePage";
+		if (error != null) {
+			viewName = "loginFailure";
+        }
+		
+//		ModelAndView modelAndView = new ModelAndView(new InternalResourceView("/login.html"));
+		return "redirect:/" + viewName; // 这里一定要使用redirect，如果不用的话，默认是post方式，使用post方式访问html静态页面时，会在ResourceHttpRequestHandler里报错“405 request method post not supported”
+	}
+	
+	/**
+	 * path不要和返回值一样，否则会报循环引用的问题。
+	 * javax.servlet.ServletException: Circular view path [welcome.html]: would dispatch back to the current handler URL [/welcome.html] again. Check your ViewResolver setup! (Hint: This may be the result of an unspecified view, due to default view name generation.)
+	 * @return
+	 */
+	@GetMapping(path = "/welcomePage")
+	public String welcome() {
+		String viewName = "welcome";
+		
+		return viewName;
 	}
 	
 	/**
