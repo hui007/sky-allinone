@@ -134,7 +134,8 @@ public class SpringMvcTest {
 	public void testValidate() throws Exception {
 		logger.warn("javax.validation.constraints.Size.message", env.getProperty("javax.validation.constraints.Size.message"));
 		mvc.perform(post("/testValidate").with(csrf()).param("eventId", "1").param("date", "20180428"))
-			.andExpect(forwardedUrl("/saveGradeEvent.html"));
+//			.andExpect(forwardedUrl("/saveGradeEvent.html"));
+			.andExpect(forwardedUrl("saveGradeEvent.html"));
 			
 	}
 	

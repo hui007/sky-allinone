@@ -2,6 +2,9 @@ package com.sky.allinone.spring;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import javax.sql.DataSource;
@@ -79,6 +82,25 @@ public class SpringSecurityTest {
 		mvc.perform(get("/redirectBefore")
 				/*.with(user("user").password("userpw").roles("USER"))*/)
 			.andExpect(status().is3xxRedirection());
+	}
+	
+	/**
+	 * 测试自定义登录页面
+	 * @throws Exception 
+	 */
+	@Test
+	public void testCustomerLoginPage() throws Exception {
+		// 未登录，跳转到自定义的登录页面
+		mvc.perform(get("/getGradeEvents"))
+			.andExpect(redirectedUrl("http://localhost/showLoginPage"));
+		
+		// 登录成功
+		mvc.perform(post("/login").param("username", "user").param("password", "userpw"))
+			.andExpect(redirectedUrl("/welcomePage"));
+		
+		// 登录失败
+		mvc.perform(post("/login").param("username", "whoami").param("password", "userpw"))
+			.andExpect(forwardedUrl("/showLoginPagePost?myError=自定义登录失败url"));
 	}
 	
 	/**
