@@ -122,7 +122,7 @@ public class HomeController {
 	 * @return
 	 */
 	@RequestMapping(value="getGradeEvents", method=GET) 
-	@ResponseBody
+//	@ResponseBody
 	public String getGradeEvent(Model model) {
 		// 也可以不指定key，key将会被自动推断出来。List<GradeEvent>将会被推断为gradeEventList
 		model.addAttribute("gradeEvents", commonMapperService.selectGradeEvents());
