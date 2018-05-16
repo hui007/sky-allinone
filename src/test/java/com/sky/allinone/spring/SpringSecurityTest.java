@@ -3,6 +3,7 @@ package com.sky.allinone.spring;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -40,6 +42,8 @@ public class SpringSecurityTest {
 	// @MockBean(name = "dynamicDataSource") No qualifying bean of type 'javax.sql.DataSource' available: expected single matching bean but found 3: clusterDataSource,masterDataSource,dynamicDataSource
 	@Autowired
 	private DataSource ds;
+	@Autowired
+	private Environment env;
 	
 	/**
 	 * 测试未认证
@@ -101,6 +105,23 @@ public class SpringSecurityTest {
 		// 登录失败
 		mvc.perform(post("/login").param("username", "whoami").param("password", "userpw"))
 			.andExpect(forwardedUrl("/showLoginPagePost?myError=自定义登录失败url"));
+	}
+	
+	/**
+	 * 测试remember-me功能
+	 * 也可以使用永久token方式，本项目使用的是暂时token方式（写入cookie）
+	 * @throws Exception 
+	 */
+	@Test
+	public void testRememberMe() throws Exception {
+		mvc.perform(post("/login").param("username", "user").param("password", "userpw"))
+			.andExpect(redirectedUrl("/welcomePage"))
+			.andExpect(cookie().doesNotExist("remember-me"));
+		
+		mvc.perform(post("/login").param("username", "user").param("password", "userpw")
+				.param("remember-me", "on"))
+			.andExpect(redirectedUrl("/welcomePage"))
+			.andExpect(cookie().exists("remember-me"));
 	}
 	
 	/**
