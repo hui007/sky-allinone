@@ -1,21 +1,27 @@
 package com.sky.allinone.security.config;
 
+import java.util.ArrayList;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.provisioning.UserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.authentication.configurers.provisioning.UserDetailsManagerConfigurer.UserDetailsBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.User.UserBuilder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.util.StringUtils;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -31,9 +37,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		// 1、基于内存用户存储
-		auth.inMemoryAuthentication().withUser("user").password("userpw").roles("USER")
-			.and()
-			.withUser("admin").password("adminpw").roles("USER", "ADMIN");
+//		auth.inMemoryAuthentication().withUser("user").password("userpw").roles("USER")
+//			.and()
+//			.withUser("admin").password("adminpw").roles("USER", "ADMIN");
 		
 		// 2、基于数据库用户存储
 //		auth.jdbcAuthentication().dataSource(ds)
@@ -47,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		// 4、使用自定义的userDetailsService
 		// 也可以自定义一个域对象继承UserDetails
 //		auth.userDetailsService(username -> new User(username, username, true, true, true, true, null));
+		auth.userDetailsService(userDetailsService()); // 为了演示remember-me功能，使用这种方式。做测试的话，还是使用inMemoryAuthentication测试方便点
 	}
 	
 	@Override
@@ -72,6 +79,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.logoutUrl("/logout") // 这是默认的登录url
 			.logoutSuccessUrl("/")
 			.and()
+			/*
+			 * 参考springsecurity basic 认证，https://www.cnblogs.com/1xin1yi/p/7386122.html
+			 * 可以通过“@AuthenticationPrincipal User loginedUser”，在登录方法里获取当前登录用户信息
+			 */
+			.httpBasic() // 因为开了formLogin()方式，basic认证方式貌似不起作用了。参考BasicAuthenticationFilter
+			.and()
+			.rememberMe()
+			.tokenValiditySeconds(60*60*2) // 两小时有效期
+			.key("md5-key")
+//			.userDetailsService(userDetailsService())
+			.and()
 			.authorizeRequests()
 			// 除了ant风格之外，还可以使用正则表达式的风格
 			.antMatchers("/getGradeEvents", "/getGradeEventsList").authenticated()
@@ -84,5 +102,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.anyRequest().permitAll()
 			.and()
 			.csrf().disable(); // 先去掉csrf，否则在html页面提交时，需要带上request parameter '_csrf' or header 'X-CSRF-TOKEN'，比较麻烦
+	}
+	
+	/* 
+	 * remember-me功能，一定要使用UserDetailsService
+	 * @see org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter#userDetailsService()
+	 */
+	@Bean
+	public UserDetailsService userDetailsService() {
+		return username -> {
+			if (!"user".equals(username) && !"admin".equals(username)) {
+				throw new BadCredentialsException("Username or password is not correct");
+			}
+			
+			String password = null;
+			if ("user".equals(username)) {
+				password = "userpw";
+			}
+			if ("admin".equals(username)) {
+				password = "adminpw";
+			}
+			
+			if (StringUtils.isEmpty(password)) {
+				throw new BadCredentialsException("Username or password is not correct");
+			}
+			
+			return new User(username, password, true, true, true, true, new ArrayList<GrantedAuthority>());
+		};
 	}
 }

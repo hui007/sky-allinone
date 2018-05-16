@@ -87,21 +87,22 @@ public class HomeController {
 	public String showLoginPagePost(@RequestParam(value="myError", required = false) String error, 
 			Model model, HttpServletRequest request) {
 		
-		String viewName = "login";
-		return viewName;
+		String viewName = "loginFailure.html"; // 使用这种方式不用写controller方法，可以直接跳转到html页面
+//		return "forward:/" + viewName; 在post方法里，使用forward跳转到静态页面，也会报405错误
+		return "redirect:/" + viewName;
 	}
 	
 //	@PostMapping(path = "/doLogin")
 	@RequestMapping(value = "/doLogin", method = {RequestMethod.GET, RequestMethod.POST})
 	public  /*ModelAndView*/ String login(@RequestParam(value="username") String userName, @RequestParam(value="password") String pw,
 			@RequestParam(value="error", required = false) String error) {
-		String viewName = "welcomePage";
+		String viewName = "welcomePage"; 
 		if (error != null) {
-			viewName = "loginFailure";
+			viewName = "loginFailure.html";
         }
 		
 //		ModelAndView modelAndView = new ModelAndView(new InternalResourceView("/login.html"));
-		return "redirect:/" + viewName; // 这里一定要使用redirect，如果不用的话，默认是post方式，使用post方式访问html静态页面时，会在ResourceHttpRequestHandler里报错“405 request method post not supported”
+		return "redirect:/" + viewName; // 这里一定要使用redirect跳转到另一个controller方法？，如果不用的话，默认是post方式，使用post方式访问html静态页面时，会在ResourceHttpRequestHandler里报错“405 request method post not supported”
 	}
 	
 	/**
@@ -121,6 +122,7 @@ public class HomeController {
 	 * @return
 	 */
 	@RequestMapping(value="getGradeEvents", method=GET) 
+	@ResponseBody
 	public String getGradeEvent(Model model) {
 		// 也可以不指定key，key将会被自动推断出来。List<GradeEvent>将会被推断为gradeEventList
 		model.addAttribute("gradeEvents", commonMapperService.selectGradeEvents());

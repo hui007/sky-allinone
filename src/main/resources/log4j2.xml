@@ -43,6 +43,7 @@
 		<logger name="com.sky.movie.mybatisSpring.data.UserMapper1" level="TRACE">
 			<appender-ref ref="StudentMapperConsole" />
 		</logger>
+		<logger name="org.springframework.web" level="debug"></logger>
 		
 		<Root level="info">
 			<AppenderRef ref="Console" />
