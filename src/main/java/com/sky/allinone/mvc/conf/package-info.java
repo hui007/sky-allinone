@@ -10,4 +10,4 @@
  * @author joshui
  *
  */
-package com.sky.allinone.mvc.config;
+package com.sky.allinone.mvc.conf;
