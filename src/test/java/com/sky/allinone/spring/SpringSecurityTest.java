@@ -131,6 +131,7 @@ public class SpringSecurityTest {
 	 * 典型攻击场景：用户U在A网站登录后，先开一个tab页，打开B网站，B网站有一个图片，点击后请求A网站某个转账URL，此时请求会发到A的后台，同时请求会带上当前Cookie
 	 * 针对同一浏览器（XSS是针对同一用户？）；针对能在服务器内部改变用户状态的请求（浏览器同源策略，黑客解析不了非同源的返回数据）
 	 * 应对措施：检查refer（浏览器可能禁用refer、低版本浏览器可能被攻破refer）、token（url token、表单token、动态token）、在http头自定义属性。这三种措施各有优缺点
+	 * 3、添加视图级别的访问控制：比如不给用户显示其无权访问的链接
 	 */
 	@Test
 	public void testTodo() {

@@ -1,4 +1,4 @@
-package com.sky.allinone.security.config;
+package com.sky.allinone.security.conf;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.sky.allinone.mvc.config;
+package com.sky.allinone.mvc.conf;
 
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.boot.autoconfigure.web.MultipartProperties;

@@ -51,9 +51,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.sky.allinone.dao.conf.DynamicDataSourceConfig;
 import com.sky.allinone.dao.entity.GradeEvent;
-import com.sky.allinone.mvc.config.WebConfig;
+import com.sky.allinone.mvc.conf.WebConfig;
 import com.sky.allinone.mvc.controller.HomeController;
-import com.sky.allinone.security.config.SecurityConfig;
+import com.sky.allinone.security.conf.SecurityConfig;
 import com.sky.allinone.service.CommonMapperService;
 
 @RunWith(SpringRunner.class)
