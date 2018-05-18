@@ -15,50 +15,35 @@
  */
 package com.sky.allinone.service;
 
+import java.net.UnknownHostException;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RedisService {
-
-	private StringRedisTemplate stringRedisTemplate;
-	private RedisTemplate redisTemplate;
+	// 还有其他的factory，比如LettuceConnectionFactory
+	@Autowired
 	private RedisConnectionFactory redisConnectionFactory;
 
-    @Autowired
-    public void setStringRedisTemplate(StringRedisTemplate template) {
-        this.stringRedisTemplate = template;
-    }
-    
-    /**
-     * 因为StringRedisTemplate也是RedisTemplate，不加@Qualifier会导致注入不了
-     * @Qualifier("redisTemplate")是spring自动生成的RedisTemplate实例的名字
-     * @param template
-     */
-    @Autowired
-    public void setRedisTemplate(@Qualifier("redisTemplate")RedisTemplate template) {
-    	this.redisTemplate = template;
-    }
-    
-    @Autowired
-    public void setRedisConnectionFactory(RedisConnectionFactory factory) {
-    	this.redisConnectionFactory = factory;
-    }
-
-	public StringRedisTemplate getStringRedisTemplate() {
-		return stringRedisTemplate;
+	/**
+	 * 正常是不能这么玩的，每次都new了一个新的对象，可以将这个写入一个工具类（使用类泛型），搞成单例模式
+	 * 或者使用RedisTemplate<String, Object>强制转换的方式
+	 * @return
+	 * @throws UnknownHostException
+	 */
+	public <V> RedisTemplate<String, V> getRedisTemplateJson(Class<V> type)
+					throws UnknownHostException {
+		RedisTemplate<String, V> template = new RedisTemplate<String, V>();
+		template.setConnectionFactory(redisConnectionFactory);
+		template.setKeySerializer(new StringRedisSerializer());
+		template.setValueSerializer(new Jackson2JsonRedisSerializer<V>(type));
+		template.afterPropertiesSet(); // 这里需要手动调用这个方法，如果是容器管理的话，就不用手动调用
+		
+		return template;
 	}
-
-	public <k, v> RedisTemplate<k, v> getRedisTemplate() {
-		return redisTemplate;
-	}
-
-	public RedisConnectionFactory getRedisConnectionFactory() {
-		return redisConnectionFactory;
-	}
-
 }
