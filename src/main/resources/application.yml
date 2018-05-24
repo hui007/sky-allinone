@@ -17,6 +17,9 @@ spring:
       suffix: .html 
   redis:
     password: redispw
+    database: 1
+  cache:
+    type: redis #指定缓存使用redis，也可以不指定，默认会检测到
 debug: true
 server:
   port: 8081
