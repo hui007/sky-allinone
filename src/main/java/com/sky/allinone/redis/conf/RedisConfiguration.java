@@ -2,6 +2,7 @@ package com.sky.allinone.redis.conf;
 
 import java.net.UnknownHostException;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +47,7 @@ public class RedisConfiguration {
 	 * @param redisConnectionFactory
 	 * @return
 	 */
+//	@Bean(name = "redisTemplate")
 	@Bean
     public RedisTemplate<Object, Object> redisTemplateJson(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
@@ -66,4 +68,16 @@ public class RedisConfiguration {
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
+	
+//	@Bean(name = "redisTemplate")
+//	public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+//		RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
+//		redisTemplate.setConnectionFactory(redisConnectionFactory);
+//		
+//		// 设置value的序列化规则和 key的序列化规则
+//		redisTemplate.setValueSerializer(new StringRedisSerializer());
+//		redisTemplate.setKeySerializer(new StringRedisSerializer());
+//		redisTemplate.afterPropertiesSet();
+//		return redisTemplate;
+//	}
 }

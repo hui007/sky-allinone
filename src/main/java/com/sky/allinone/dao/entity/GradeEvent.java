@@ -1,5 +1,6 @@
 package com.sky.allinone.dao.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Id;
@@ -8,7 +9,8 @@ import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class GradeEvent {
+@SuppressWarnings("serial")
+public class GradeEvent implements Serializable{
 	@NotNull
 	@Id
 	private String eventId;
