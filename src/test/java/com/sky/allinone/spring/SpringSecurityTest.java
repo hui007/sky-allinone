@@ -1,5 +1,6 @@
 package com.sky.allinone.spring;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -20,6 +21,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreFilter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -125,7 +131,48 @@ public class SpringSecurityTest {
 	}
 	
 	/**
-	 * 未测试到的点：Security框架提供了支持，只是本测试用例还没测试
+	 * 方法级别的安全验证-测试未登录
+	 * @throws Exception 
+	 */
+	@Test
+	public void testMethodSecurityNoLogin() throws Exception {
+		mvc.perform(get("/methodSecurity"))
+			.andExpect(redirectedUrl("http://localhost/showLoginPage"));
+		mvc.perform(get("/methodSecurity/inner"))
+			.andExpect(forwardedUrl("/home.html"));
+		mvc.perform(get("/methodSecurity/innerService/secured"))
+			.andExpect(redirectedUrl("http://localhost/showLoginPage"));
+		mvc.perform(get("/methodSecurity/innerService/preAuthorize"))
+			.andExpect(redirectedUrl("http://localhost/showLoginPage"));
+		mvc.perform(get("/methodSecurity/innerService/postAuthorize"))
+			.andExpect(redirectedUrl("http://localhost/showLoginPage"));
+	}
+	
+	/**
+	 * 方法级别的安全验证-测试已登录
+	 * 如果使用roles="userRole"，会自动加上”ROLE_“前缀
+	 * @throws Exception 
+	 */
+	@Test
+	@WithMockUser(username = "user", password = "userpw", roles = "userRole")
+	public void testMethodSecurityLogined() throws Exception {
+		SecurityContext authentication = SecurityContextHolder.getContext();
+		assertThat(authentication.getAuthentication().getAuthorities().contains("userRole"));
+		
+		mvc.perform(get("/methodSecurity"))
+			.andExpect(forwardedUrl("/home.html"));
+		mvc.perform(get("/methodSecurity/inner"))
+			.andExpect(forwardedUrl("/home.html"));
+		mvc.perform(get("/methodSecurity/innerService/secured"))
+			.andExpect(forwardedUrl("/home.html"));
+		mvc.perform(get("/methodSecurity/innerService/preAuthorize?eventId=5"))
+			.andExpect(forwardedUrl("/home.html"));
+		mvc.perform(get("/methodSecurity/innerService/postAuthorize?category=user"))
+			.andExpect(forwardedUrl("user.html")); // 相对路径
+	}
+	
+	/**
+	 * mvc安全未测试到的点：Security框架提供了支持，只是本测试用例还没测试
 	 * 1、强制通道的安全性：也就是把http重定向到https
 	 * 2、CSRF跨站请求伪造
 	 * 典型攻击场景：用户U在A网站登录后，先开一个tab页，打开B网站，B网站有一个图片，点击后请求A网站某个转账URL，此时请求会发到A的后台，同时请求会带上当前Cookie
@@ -134,7 +181,19 @@ public class SpringSecurityTest {
 	 * 3、添加视图级别的访问控制：比如不给用户显示其无权访问的链接
 	 */
 	@Test
-	public void testTodo() {
+	public void testWebTodo() {
+		
+	}
+	
+	/**
+	 * method安全未测试到的点：
+	 * 1、过滤方法的输入输入
+	 * @PreFilter：对参数进行过滤
+	 * @PostFilter：对输出结果进行顾虑
+	 * 2、自定义许可计算器：实现PermissionEvaluator
+	 */
+	@Test
+	public void testMethodTodo() {
 		
 	}
 }
