@@ -53,8 +53,9 @@ import com.sky.allinone.dao.conf.DynamicDataSourceConfig;
 import com.sky.allinone.dao.entity.GradeEvent;
 import com.sky.allinone.mvc.conf.WebConfig;
 import com.sky.allinone.mvc.controller.HomeController;
-import com.sky.allinone.security.conf.SecurityConfig;
+import com.sky.allinone.security.conf.WebSecurityConfig;
 import com.sky.allinone.service.CommonMapperService;
+import com.sky.allinone.service.MethodSecurityService;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest({HomeController.class})
@@ -65,6 +66,8 @@ public class SpringMvcTest {
     private MockMvc mvc;
 	@MockBean
 	private CommonMapperService commonMapperService;
+	@MockBean
+	private MethodSecurityService methodSecurityService;
 	@Autowired
 	private Environment env;
 	@Autowired

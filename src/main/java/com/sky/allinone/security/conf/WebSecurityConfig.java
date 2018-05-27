@@ -6,6 +6,8 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
@@ -31,11 +33,13 @@ import org.springframework.context.annotation.Bean;
 //@EnableWebSecurity
 //@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 //@EnableConfigurationProperties(SecuritySettings.class)
-public class SecurityConfig extends WebSecurityConfigurerAdapter{
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Autowired
 	DataSource ds;
 	@Autowired
 	private Environment env;
+	@Autowired
+	UserDetailsService userDetailsService;
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -56,7 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		// 4、使用自定义的userDetailsService
 		// 也可以自定义一个域对象继承UserDetails
 //		auth.userDetailsService(username -> new User(username, username, true, true, true, true, null));
-		auth.userDetailsService(userDetailsService()); // 为了演示remember-me功能，使用这种方式。做测试的话，还是使用inMemoryAuthentication测试方便点
+//		auth.userDetailsService(userDetailsService()); // 为了演示remember-me功能，使用这种方式。做测试的话，还是使用inMemoryAuthentication测试方便点
+		auth.userDetailsService(userDetailsService); // 为了演示remember-me功能，使用这种方式。做测试的话，还是使用inMemoryAuthentication测试方便点
 	}
 	
 	@Override
@@ -105,32 +110,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.anyRequest().permitAll()
 			.and()
 			.csrf().disable(); // 先去掉csrf，否则在html页面提交时，需要带上request parameter '_csrf' or header 'X-CSRF-TOKEN'，比较麻烦
-	}
-	
-	/* 
-	 * remember-me功能，一定要使用UserDetailsService
-	 * @see org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter#userDetailsService()
-	 */
-	@Bean
-	public UserDetailsService userDetailsService() {
-		return username -> {
-			if (!"user".equals(username) && !"admin".equals(username)) {
-				throw new BadCredentialsException("Username or password is not correct");
-			}
-			
-			String password = null;
-			if ("user".equals(username)) {
-				password = "userpw";
-			}
-			if ("admin".equals(username)) {
-				password = "adminpw";
-			}
-			
-			if (StringUtils.isEmpty(password)) {
-				throw new BadCredentialsException("Username or password is not correct");
-			}
-			
-			return new User(username, password, true, true, true, true, new ArrayList<GrantedAuthority>());
-		};
 	}
 }

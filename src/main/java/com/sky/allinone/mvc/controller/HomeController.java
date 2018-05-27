@@ -11,11 +11,18 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,11 +46,14 @@ import com.sky.allinone.mvc.exception.CommonException;
 import com.sky.allinone.mvc.exception.MethodException;
 import com.sky.allinone.mvc.exception.NotAccepableException;
 import com.sky.allinone.service.CommonMapperService;
+import com.sky.allinone.service.MethodSecurityService;
 
 @Controller
 @RequestMapping({"/", "/homepage"})
 public class HomeController {
 	Logger logger = LoggerFactory.getLogger(HomeController.class);
+	@Autowired
+	MethodSecurityService methodSecurityService;
 	
 	@Autowired
 	private CommonMapperService commonMapperService;
@@ -268,5 +278,61 @@ public class HomeController {
 		logger.info("from:{}, to:{}", from, to);
 		
 		return "redirectAfter";
+	}
+	
+	/**
+	 * 这种可以起到安全验证的效果
+	 * @return
+	 */
+	@GetMapping(path = "methodSecurity")
+	@Secured(value =  {"ROLE_userRole", "ROLE_anyOneElse"})
+	public String methodSecurity() {
+//		return "home"; 相对路径，会跳转到/methodSecurity/home.html
+		return "/home";
+	}
+	
+	/**
+	 * 这种起不到安全验证的效果，因为不是通过代理的方式调用methodSecurityInner方法的
+	 * @return
+	 */
+	@GetMapping(path = "methodSecurity/inner")
+	public String methodSecurityInnerReq() {
+		return methodSecurityInner();
+	}
+	
+	@Secured("ROLE_userRole")
+	private String methodSecurityInner() {
+		return "/home";
+	}
+	
+	/**
+	 * 这种可以起到安全验证的效果，methodSecurityService已经是spring管理的代理对象了
+	 * @return
+	 */
+	@GetMapping(path = "methodSecurity/innerService/{type}")
+	public String methodSecurityinnerServiceReq(@PathVariable String type, 
+			@RequestParam(required = false) String eventId, 
+			@RequestParam(required = false) String category) {
+		EvaluationContext context = new StandardEvaluationContext(methodSecurityService);
+		
+		String method = "secured()";
+		if (StringUtils.equals(type, "secured")) {
+			method = "secured()";
+		} else if(StringUtils.equals(type, "preAuthorize")){
+			GradeEvent event = new GradeEvent();
+			event.setEventId(eventId);
+			
+			context.setVariable("event", event);
+			method = "preAuthorize(#event)";
+		} else if(StringUtils.equals(type, "postAuthorize")){
+			context.setVariable("category", category);
+			method = "postAuthorize(#category)";
+		}
+		
+		ExpressionParser parser = new SpelExpressionParser();
+		Expression exp = parser.parseExpression(method);
+		
+		String url = exp.getValue(context, String.class);
+		return url;
 	}
 }

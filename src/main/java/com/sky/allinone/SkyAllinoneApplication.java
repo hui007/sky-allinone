@@ -1,10 +1,18 @@
 package com.sky.allinone;
 
+import java.util.ArrayList;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.util.StringUtils;
 
 /*
  *  需要设置事务(本质也是AOP)执行的顺序，否则事务的执行顺序高于后续的AOP，会导致动态切换数据源失效。
@@ -26,5 +34,36 @@ public class SkyAllinoneApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SkyAllinoneApplication.class, args);
+	}
+	
+	/* 
+	 * remember-me功能，一定要使用UserDetailsService
+	 * @see org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter#userDetailsService()
+	 */
+	@Bean
+	public UserDetailsService userDetailsService() {
+		return username -> {
+			if (!"user".equals(username) && !"admin".equals(username)) {
+				throw new BadCredentialsException("Username or password is not correct");
+			}
+			
+			ArrayList<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+			String password = null;
+			
+			if ("user".equals(username)) {
+				password = "userpw";
+				authorities.add(() -> "userRole");
+			}
+			if ("admin".equals(username)) {
+				authorities.add(() -> "adminRole");
+				password = "adminpw";
+			}
+			
+			if (StringUtils.isEmpty(password)) {
+				throw new BadCredentialsException("Username or password is not correct");
+			}
+			
+			return new User(username, password, true, true, true, true, authorities);
+		};
 	}
 }
