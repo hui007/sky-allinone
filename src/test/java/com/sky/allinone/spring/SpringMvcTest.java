@@ -58,12 +58,13 @@ import com.itextpdf.tool.xml.XMLWorkerHelper;
 import com.sky.allinone.dao.conf.DynamicDataSourceConfig;
 import com.sky.allinone.dao.entity.GradeEvent;
 import com.sky.allinone.mvc.conf.WebConfig;
+import com.sky.allinone.mvc.controller.FileController;
 import com.sky.allinone.mvc.controller.HomeController;
 import com.sky.allinone.service.CommonMapperService;
 import com.sky.allinone.service.MethodSecurityService;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest({HomeController.class})
+@WebMvcTest({HomeController.class, FileController.class})
 @Import({WebConfig.class, DynamicDataSourceConfig.class})
 public class SpringMvcTest {
 	Logger logger = LoggerFactory.getLogger(SpringMvcTest.class);
@@ -269,6 +270,13 @@ public class SpringMvcTest {
         document.close();  
         
         assertThat(new File(destUrl).exists()).isTrue();
+	}
+	
+	@Test
+	public void testPDFMvc() throws Exception {
+		mvc.perform(get("/file/downloadVoidPdf"));
+		mvc.perform(get("/file/downloadResponseEntityPdf"));
+		mvc.perform(get("/file/downloadViewPdf"));
 	}
 	
 	/** 
