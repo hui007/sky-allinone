@@ -70,6 +70,30 @@
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 		
+		<!-- PDF工具类 start -->
+		<dependency>
+		    <groupId>com.itextpdf</groupId>
+		    <artifactId>itextpdf</artifactId>
+		    <version>5.5.6</version>
+		</dependency>
+		<!-- itextpdf的亚洲字体支持 -->
+		<dependency>
+		    <groupId>com.itextpdf</groupId>
+		    <artifactId>itext-asian</artifactId>
+		    <version>5.2.0</version>
+		</dependency>
+		<dependency>  
+		    <groupId>com.itextpdf.tool</groupId>  
+		    <artifactId>xmlworker</artifactId>  
+		    <version>5.4.1</version>  
+		</dependency> 
+		<dependency>  
+		    <groupId>org.jsoup</groupId>  
+		    <artifactId>jsoup</artifactId>  
+		    <version>1.10.1</version>  
+		</dependency> 
+		<!-- PDF工具类 end -->
+		
 		<!-- commons-lang工具类 -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
