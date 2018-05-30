@@ -6,8 +6,6 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -19,10 +17,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -31,29 +32,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.MultipartProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontProvider;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
 import com.sky.allinone.dao.conf.DynamicDataSourceConfig;
 import com.sky.allinone.dao.entity.GradeEvent;
 import com.sky.allinone.mvc.conf.WebConfig;
 import com.sky.allinone.mvc.controller.HomeController;
-import com.sky.allinone.security.conf.WebSecurityConfig;
 import com.sky.allinone.service.CommonMapperService;
 import com.sky.allinone.service.MethodSecurityService;
 
@@ -199,5 +202,97 @@ public class SpringMvcTest {
 		mvc.perform(get("/redirectBefore"))
 			.andExpect(status().is3xxRedirection());
 	}
+	
+	/**
+	 * 测试生成PDF-普通文本
+	 * @throws DocumentException 
+	 * @throws FileNotFoundException 
+	 */
+	@Test
+	public void testPDFText() throws FileNotFoundException, DocumentException {
+		 //第一步，创建一个 iTextSharp.text.Document对象的实例：  
+        Document document = new Document();  
+        //第二步，为该Document创建一个Writer实例：  
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("/Users/jianghui/Downloads/temp-del/测试生成PDF-text.pdf"));  
+        //第三步，打开当前Document  
+        document.open();  
+        //第四步，为当前Document添加内容；  
+        document.add(new Paragraph("Hello World"));    
+        //第五步，关闭Document  
+        document.close(); 
+	}
+	
+	/**
+	 * 测试生成PDF-从html文件生成pdf
+	 * @throws DocumentException 
+	 * @throws IOException 
+	 */
+	@Test
+	public void testPDFHtml() throws DocumentException, IOException {
+		//第一步，创建一个 iTextSharp.text.Document对象的实例：  
+        Document document = new Document();  
+        //第二步，为该Document创建一个Writer实例：  
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("/Users/jianghui/Downloads/temp-del/测试生成PDF-html.pdf"));  
+        //第三步，打开当前Document  
+        document.open();  
+        //第四步，为当前Document添加内容：  
+        //document.add(new Paragraph("Hello World"));  
+        XMLWorkerHelper.getInstance().parseXHtml(writer, document, new ClassPathResource("static/pdf.html").getInputStream());  
+        //第五步，关闭Document  
+        document.close();  
+	}
+	
+	/**
+	 * 测试生成PDF-从html字符串生成pdf
+	 * @throws DocumentException 
+	 * @throws IOException 
+	 */
+	@Test
+	public void testPDFHtmlStr() throws DocumentException, IOException {
+		Document document = new Document();  
+        PdfWriter mPdfWriter = PdfWriter.getInstance(document, new FileOutputStream("/Users/jianghui/Downloads/temp-del/测试生成PDF-htmlStr.pdf"));  
+        document.open();  
+        String s = getHtml();  
+        ByteArrayInputStream bin = new ByteArrayInputStream(s.getBytes());  
+        XMLWorkerHelper.getInstance().parseXHtml(mPdfWriter, document, bin, null, new ChinaFontProvide());  
+        System.out.println("OK");  
+        document.close();  
+	}
+	
+	/** 
+     * 拼写html字符串代码 
+     */  
+    private String getHtml() {  
+        StringBuffer html = new StringBuffer();                                                                                                             
+        html.append("<div>美丽的风景</div>");  
+        html.append("<div><img src='https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1527616378659&di=8620de737fc0dcbec50afda15f0fc12b&imgtype=0&src=http%3A%2F%2Fc.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Faec379310a55b319c14072dc4fa98226cefc17d9.jpg'/></div>");  
+                                                                                                                
+        return html.toString();  
+    }  
+    
+    /** 
+     * 解决中文字体 
+     */  
+    public static final class ChinaFontProvide implements FontProvider {  
+  
+        @Override  
+        public Font getFont(String arg0, String arg1, boolean arg2, float arg3, int arg4, BaseColor arg5) {  
+            BaseFont bfChinese = null;  
+            try {  
+                bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);  
+                //也可以使用Windows系统字体(TrueType)  
+                //bfChinese = BaseFont.createFont("C:/WINDOWS/Fonts/SIMYOU.TTF", BaseFont.IDENTITY_H,BaseFont.NOT_EMBEDDED);   
+            } catch (Exception e) {  
+                e.printStackTrace();  
+            }  
+            Font FontChinese = new Font(bfChinese, 20, Font.NORMAL);  
+            return FontChinese;  
+        }  
+  
+        @Override  
+        public boolean isRegistered(String arg0) {  
+            return false;  
+        }  
+    }  
 	
 }
