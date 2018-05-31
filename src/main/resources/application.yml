@@ -27,6 +27,15 @@ server:
     init-parameters: #servlet启动参数
       a: 1
       b: 2
+  compression: #这个设置本身是由servlet container提供的，所以，也可以在tomcat等的设置里找到
+    enabled: true
+    mime-types:
+    - application/json
+    - application/xml
+    - text/html
+    - text/xml
+    - text/plain
+    min-response-size: 2048 #默认情况下，仅会压缩2048字节以上的内容
 #security:
 #  basic:
 #    authorize-mode: none #不启用spring security

@@ -266,7 +266,6 @@ public class SpringMvcTest {
         String s = getHtml();  
         ByteArrayInputStream bin = new ByteArrayInputStream(s.getBytes());  
         XMLWorkerHelper.getInstance().parseXHtml(mPdfWriter, document, bin, null, new ChinaFontProvide());  
-        System.out.println("OK");  
         document.close();  
         
         assertThat(new File(destUrl).exists()).isTrue();
@@ -277,6 +276,7 @@ public class SpringMvcTest {
 		mvc.perform(get("/file/downloadVoidPdf"));
 		mvc.perform(get("/file/downloadResponseEntityPdf"));
 		mvc.perform(get("/file/downloadViewPdf"));
+		mvc.perform(get("/file/downloadZip"));
 	}
 	
 	/** 
