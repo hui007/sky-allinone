@@ -1,17 +1,26 @@
 package com.sky.allinone.mvc.controller;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.aspectj.apache.bcel.util.ClassPath;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -88,6 +97,13 @@ public class FileController {
 		createPdf(response.getOutputStream());
 	}
 	
+	/**
+	 * 下载pdf文件
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping("/downloadResponseEntityPdf")
 	public ResponseEntity<byte[]> downloadResponseEntityPdf(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		HttpHeaders headers = new HttpHeaders(); 
@@ -101,6 +117,13 @@ public class FileController {
 		return resp;
 	}
 	
+	/**
+	 * 下载pdf文件
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping("/downloadViewPdf")
 	public ModelAndView downloadViewPdf(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		PdfView pdf = new PdfView(); 
@@ -110,6 +133,93 @@ public class FileController {
 		
 		return mv;
 	}
+	
+	/**
+	 * 压缩文件下载
+	 * 这里没有注意流的正确关闭，实际使用中要注意
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/downloadZip")
+	public ResponseEntity<byte[]> downloadZip(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// zip临时文件
+		String outFileName = UUID.randomUUID().toString() + ".zip";
+		String outFilePath = request.getSession().getServletContext().getRealPath("/");
+		
+		File outFile = new File(outFilePath + outFileName); 
+		HttpHeaders headers = new HttpHeaders(); 
+		headers.setContentDispositionFormData("attachment", outFileName);
+		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		
+		// zip压缩流
+		ZipOutputStream zipOutStream = new ZipOutputStream(new FileOutputStream(outFile));
+		
+		// 生成pdf文件内容到输出流
+		ByteArrayOutputStream bos = new ByteArrayOutputStream(); 
+		createPdf(bos);
+		
+		// 将pdf文件输出流压缩输出到zip临时文件
+		BufferedInputStream is = new BufferedInputStream(new ByteArrayInputStream(bos.toByteArray()));
+		zipFile(is, zipOutStream);
+		
+		// 读取zip临时文件内容到字节数组
+		BufferedInputStream fis = new BufferedInputStream(new FileInputStream(outFile));
+        byte[] buffer = new byte[fis.available()];
+        fis.read(buffer);
+        
+        fis.close();
+        zipOutStream.close();
+        bos.close();
+        is.close();
+        
+        outFile.delete();
+		
+		ResponseEntity<byte[]> resp = new ResponseEntity<byte[]>(buffer, headers, HttpStatus.OK); 
+		return resp;
+	}
+	
+	private void zipFile(InputStream is, ZipOutputStream outputstream) throws IOException, ServletException {
+		final int MAX_BYTE = 10 * 1024 * 1024; // 最大的流为10M
+		long totalBytes = 0; // 接受流的容量
+		int splitNum = 0; // 流需要分开的数量
+		int leaveByte = 0; // 文件剩下的字符数
+		byte[] inOutbyte; // byte数组接受文件的数据
+		BufferedInputStream bis = null;
+		
+        try {
+			bis = new BufferedInputStream(is);
+			ZipEntry entry = new ZipEntry(RandomStringUtils.random(5, "sky01") + ".pdf");
+			outputstream.putNextEntry(entry);
+
+			totalBytes = bis.available(); // 通过available方法取得流的最大字节数
+			splitNum = (int) Math.floor(totalBytes / MAX_BYTE); // 取得流文件需要分开读取的次数
+			leaveByte = (int) totalBytes % MAX_BYTE; // 分开读取之后，最后剩余要读取的字节数
+
+			// 写入流数据
+			if (splitNum > 0) {
+			    for (int j = 0; j < splitNum; ++j) {
+			        inOutbyte = new byte[MAX_BYTE];
+			        bis.read(inOutbyte, 0, MAX_BYTE);
+			        outputstream.write(inOutbyte, 0, MAX_BYTE); 
+			    }
+			}
+			// 写入剩下的流数据
+			inOutbyte = new byte[leaveByte];
+			bis.read(inOutbyte, 0, leaveByte);
+			outputstream.write(inOutbyte);
+			outputstream.flush();
+			
+        } catch (IOException e) {
+            throw e;
+        } finally {
+        	// 关闭
+        	if (outputstream != null) {
+				outputstream.closeEntry(); // Closes the current ZIP entry and positions the stream for writing the next entry
+			}
+        }
+    }
 
 	private void createPdf(OutputStream outputStream)
 			throws DocumentException, IOException, BadElementException, MalformedURLException {
