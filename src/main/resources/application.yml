@@ -23,6 +23,7 @@ spring:
 debug: true
 server:
   port: 8081
+  servlet-path: / #dispatchServlet拦截的url。还有一种方式是自定义一个ServletRegistrationBean
   jsp-servlet:
     init-parameters: #servlet启动参数
       a: 1
