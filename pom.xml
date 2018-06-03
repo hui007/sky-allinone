@@ -70,6 +70,13 @@
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 		
+		<!-- hessian 远程RPC服务 -->
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>hessian</artifactId>
+			<version>4.0.51</version>
+		</dependency>
+		
 		<!-- PDF工具类 start -->
 		<dependency>
 		    <groupId>com.itextpdf</groupId>
