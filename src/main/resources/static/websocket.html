@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<script src="http://cdn.jsdelivr.net/sockjs/1.0.1/sockjs.min.js"></script>
+<script type="text/javascript">
+	//var url = 'ws://' + window.location.host + '/marco'; // WebSocket url，可以通过wss:建立安全的websocket连接
+	var url = 'http://' + window.location.host + '/marco'; // sockJs url
+	console.log("请求地址为：" + url);
+	
+	//var sock = new WebSocket(url); // 使用WebSocket
+	var sock = new SockJS(url); // 使用sockJs，兼容性更好
+
+	sock.onopen = function() { // 处理连接开启亊件
+		console.log('连接开启中');
+		sayMarco();
+	};
+
+	sock.onmessage = function(e) { // 处理信息
+		console.log('收到消息:', e.data);
+		setTimeout(function() {
+			sayMarco()
+		}, 2000);
+	};
+
+	sock.onclose = function() { // 处理连接关闭亊件
+		console.log('连接关闭中');
+	};
+
+	function sayMarco() { // 发送消息
+		console.log('发送消息：今晚吃鸡! ');
+		sock.send("今晚吃鸡! ");
+	};
+</script>
+<body>
+
+</body>
+</html>

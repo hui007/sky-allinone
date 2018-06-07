@@ -21,6 +21,11 @@ import org.springframework.web.client.RestTemplate;
 
 import com.sky.allinone.dao.entity.GradeEvent;
 
+/**
+ * 跟remote测试一样，必须先启动spring boot application，再运行本测试用例
+ * @author joshui
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class SpringRestFulTest {
