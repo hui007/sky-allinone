@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<script src="http://cdn.jsdelivr.net/sockjs/1.0.1/sockjs.min.js"></script>
+<script type="application/javascript" src="http://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+<script type="text/javascript">
+	var url = 'http://' + window.location.host + '/stomp'; 
+	console.log("请求地址为：" + url);
+	
+	var sock = new SockJS(url); // 创建sockJs连接
+	var stomp = Stomp.over(sock); // 创建stomp客户端
+
+	var headers = {
+	        username:'user',
+	        password:'userpw'
+	    };
+	stomp.connect(headers, '', function(frame){
+		stomp.subscribe("/topic/hiStomp", handlerFeedString);
+		stomp.subscribe("/app/backHiStomp", handlerFeedString);
+		stomp.subscribe("/user/queue/notifyUser", handlerFeedString);
+		stomp.subscribe("/topic/broadcastStompMsg", handlerFeedJson);
+		stomp.send('/app/hiStomp', {}, "你好");
+		// 如果没有传递用户信息，后台方法会报错MissingSessionUserException
+		stomp.send('/app/dealWithUser', {}, "某个用户来了");
+	});
+	
+	function handlerFeedString(incoming){
+		/* var feed = JSON.parse(incoming.body); */
+		console.log("接收到的string订阅消息：" + incoming.body);
+	}
+	
+	function handlerFeedJson(incoming){
+		var feed = JSON.parse(incoming.body);
+		console.log("接收到的json订阅消息：" + incoming.body);
+	}
+</script>
+<body>
+
+</body>
+</html>
