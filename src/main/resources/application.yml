@@ -22,8 +22,8 @@ spring:
     type: redis #指定缓存使用redis，也可以不指定，默认会检测到
   mail:
     host: smtp.163.com
-    username: jianghui_job@163.com
-    password: joshui_hero&186
+    username: youmailname
+    password: youpassword
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
