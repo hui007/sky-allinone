@@ -1,9 +1,13 @@
 package com.sky.allinone.email;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.mail.MailAuthenticationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.sky.allinone.email.service.EmailService;
@@ -13,6 +17,8 @@ import com.sky.allinone.email.service.EmailService;
 public class EmailTest {
 	@Autowired
 	EmailService emailService;
+	@Rule
+	public ExpectedException expectedEx = ExpectedException.none();
 	
 	/*
 	 * 接种邮件协议的说明：
@@ -34,6 +40,7 @@ public class EmailTest {
 	
 	@Test
 	public void testSendText() {
+		expectedEx.expect(MailAuthenticationException.class);
 		emailService.sendSimple();
 	}
 	
