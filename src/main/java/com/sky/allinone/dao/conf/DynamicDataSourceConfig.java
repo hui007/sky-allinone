@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.apache.ibatis.io.VFS;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -23,6 +24,8 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.github.pagehelper.PageInterceptor;
 import com.sky.allinone.dao.plugin.ExamplePlugin;
+
+import tk.mybatis.mapper.autoconfigure.SpringBootVFS;
 
 @Configuration
 //@Import({SampleMasterDataSourceConfig.class, SampleClusterDataSourceConfig.class})
@@ -131,6 +134,11 @@ public class DynamicDataSourceConfig {
         interceptor.setProperties(properties);
         sessionFactory.setPlugins(new Interceptor[]{interceptor, new ExamplePlugin()});
 		
+        /*
+         * 不加这句的话，在springboot打包成的jar里setTypeAliasesPackage设置的会不生效。
+         * MyBatis扫描通过VFS来实现，在Spring Boot中，由于是嵌套Jar，导致Mybatis默认的VFS实现DefaultVFS无法扫描嵌套Jar中的类。
+         */
+        VFS.addImplClass(SpringBootVFS.class);
         // 可以使用这种方式，也可以在配置文件里配置。因为使用了动态数据源，禁用掉了DataSourceAutoConfiguration，貌似在配置文件里配置的就识别不了了
         sessionFactory.setTypeAliasesPackage("com.sky.allinone.dao.entity");
 		sessionFactory

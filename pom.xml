@@ -215,6 +215,20 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<!-- 加这个resourc，主要是因为在src/main/java有配置文件，否则不会将这些配置文件放入打好的jar里 -->
+			<resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.properties</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -222,6 +236,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>
