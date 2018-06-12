@@ -4,6 +4,7 @@ package com.sky.allinone;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import com.sky.allinone.actuator.ActuatorTest;
 import com.sky.allinone.cache.CacheTest;
 import com.sky.allinone.email.EmailTest;
 import com.sky.allinone.jmx.JmxTest;
@@ -21,7 +22,7 @@ import com.sky.allinone.webSocket.WebSocketTest;
  *
  */
 @RunWith(Suite.class)  
-@Suite.SuiteClasses({RemoteTest.class, JmxTest.class})  
+@Suite.SuiteClasses({RemoteTest.class, JmxTest.class, ActuatorTest.class})  
 public class SuiteTestRemote {
 
 }

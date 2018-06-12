@@ -6,10 +6,11 @@
 	<groupId>com.sky</groupId>
 	<artifactId>allinone</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<!-- 这里也可以打成可运行war包，jar -jar xx.war -->
 	<packaging>jar</packaging>
 
 	<name>sky-allinone</name>
-	<description>一个大而全的工程，不考虑微服务什么的，示例各种知识点</description>
+	<description>存储一下自己接触过的一些知识点，目的是直接拿到生产环境使用</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -68,6 +69,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+		
+		<!-- actuator -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		
 		<!-- mail -->

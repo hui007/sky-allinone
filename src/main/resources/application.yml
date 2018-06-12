@@ -28,6 +28,15 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
       mail.smtp.starttls.required: true
+security: #actuator配置
+  user:
+    name: user
+    password: userpw
+management:
+  security:
+    roles:
+    - userRole
+  context-path: /manage
 debug: true
 server:
   port: 8081

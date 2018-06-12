@@ -107,6 +107,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 			.antMatchers(HttpMethod.GET, "/handlerException").hasRole("ADMIN")
 			// 使用spel表达式
 			.antMatchers("/redirectBefore").access("hasRole('USER') and hasIpAddress('127.0.0.1')")
+			.antMatchers("/manage/*").authenticated()
 			.anyRequest().permitAll()
 			.and()
 			.csrf().disable(); // 先去掉csrf，否则在html页面提交时，需要带上request parameter '_csrf' or header 'X-CSRF-TOKEN'，比较麻烦
