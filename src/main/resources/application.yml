@@ -28,6 +28,12 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
       mail.smtp.starttls.required: true
+  kafka: #kafka配置
+    bootstrap-servers:
+    - localhost:9092
+    consumer:
+      group-id: joshuiConsumerGroup
+      auto-offset-reset: earliest #to ensure the new consumer group will get the messages we just sent, because the container might start after the sends have completed.
 security: #actuator配置
   user:
     name: user
