@@ -52,21 +52,28 @@ public class KafkaTest {
 	@Test
 	public void useJava() throws Exception {
 		logger.info("开始测试useJava");
+		
+		// 消费者-ContainerProperties
 		ContainerProperties containerProps = new ContainerProperties("topic1", "topic2");
 		final CountDownLatch latch = new CountDownLatch(4);
 		containerProps.setMessageListener(new MessageListener<Integer, String>() {
 
 			@Override
 			public void onMessage(ConsumerRecord<Integer, String> message) {
+				// 第一次启动时，有时候消费不到。第一次时，正常应该是先启动消费者，再启动生产者
 				logger.info("useJava收到消息: " + message);
 				latch.countDown();
 			}
 
 		});
+		
+		// 消费者-KafkaMessageListenerContainer
 		KafkaMessageListenerContainer<Integer, String> container = createContainer(containerProps);
 		container.setBeanName("useJava");
 		container.start();
 		Thread.sleep(1000); // wait a bit for the container to start
+		
+		// 生产者-发送消息
 		KafkaTemplate<Integer, String> template = createTemplate();
 		template.setDefaultTopic(topic1 );
 		template.sendDefault(0, "foo");
@@ -75,6 +82,7 @@ public class KafkaTest {
 		template.sendDefault(2, "qux");
 		template.flush();
 		assertTrue(latch.await(60, TimeUnit.SECONDS));
+		
 		container.stop();
 		logger.info("结束测试useJava");
 
