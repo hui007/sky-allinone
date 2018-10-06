@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>商品列表页面</title>
+<script type="text/javascript">
+	/*
+	* 此段js不会被缓存，负责点亮购买按钮
+	*/
+	document.ready(function() {
+		document
+				.write("<script type='text/javascript' src='js/goods.js?v="
+						+ Math.random() + "'></s" + "cript>");
+	});
+</script>
+</head>
+<body>
+	<button id="buyBtn" disabled="disabled" onclick="buy();">购买</button>
+</body>
+</html>
