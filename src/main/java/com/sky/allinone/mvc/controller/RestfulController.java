@@ -4,12 +4,17 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -104,5 +109,34 @@ public class RestfulController {
 		
 		ResponseEntity<GradeEvent> responseEntity = new ResponseEntity<GradeEvent>(e, header, HttpStatus.CREATED);
 		return responseEntity;
+	}
+	
+	@RequestMapping(value = "aplipay/app/async/pay", method = RequestMethod.POST)
+	public String alipayAppCallback(HttpServletRequest request, HttpServletResponse response) {
+		Map requestParams = request.getParameterMap();
+		logger.info("接收到支付宝app支付异步通知。requestParams：{}", requestParams);
+		
+		return "success";
+	}
+	
+	@RequestMapping(value = "wx/app/async/pay", method = RequestMethod.POST, consumes = "text/xml")
+	public String wxAppCallback(@RequestBody String xml) {
+		logger.info("接收到微信app支付异步通知。xmlStr：{}", xml);
+		
+		return "success";
+	}
+	
+	@RequestMapping(value = "wx/app/async/pay2", method = RequestMethod.POST)
+	public String wxAppCallback2(HttpServletRequest request, HttpServletResponse response) {
+		logger.info("接收到微信app支付异步通知2。xmlStr：{}");
+		
+		return "success";
+	}
+	
+	@RequestMapping(value = "wx/app/async/pay3", method = RequestMethod.POST)
+	public String wxAppCallback3(@RequestBody String xml, HttpServletRequest request, HttpServletResponse response) {
+		logger.info("接收到微信app支付异步通知2。xmlStr：{}");
+		
+		return "success";
 	}
 }
