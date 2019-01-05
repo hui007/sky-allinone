@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.sky.allinone.dao.entity.GradeEvent;
+import com.sky.mybatis.mybatisSpringBootCommonMapper.domain.GradeEvent;
 
 /**
  * 控制器直接返回客户端需要的数据表述，不经过视图名-视图渲染这个过程。
