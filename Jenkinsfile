@@ -15,9 +15,9 @@ pipeline {
         stage('Deliver') { 
             steps {
                 // sh 'sudo ./jenkins/scripts/deliver.sh' 
+                // sh ./jenkins/scripts/deliver.sh
                 sh 	'''
                 	echo "准备执行部署脚本"
-                	// sh ./jenkins/scripts/deliver.sh
                 	sudo scp ./target/allinone-0.0.1-SNAPSHOT.jar root@193.112.47.33:/home/joshui
             	'''
             }
