@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.sky.allinone.mvc.vo.BusinessNoticeBean;
 import com.sky.mybatis.mybatisSpringBootCommonMapper.domain.GradeEvent;
 
 /**
@@ -155,5 +156,13 @@ public class RestfulController {
 		logger.info("接收到微信app支付异步通知2。xmlStr：{}");
 		
 		return "success";
+	}
+	
+	@RequestMapping(value = "/lianlianpay/receiveNotify", method = RequestMethod.POST)
+	@ResponseBody
+	public String lianlianpayReceiveNotify(@RequestBody BusinessNoticeBean businessNoticeBean,  HttpServletResponse resp,
+			HttpServletRequest request) {
+		logger.info("notify request:" + businessNoticeBean.toString());
+		return "{\"ret_code\":\"0000\", \"ret_msg\":\"交易成功\"}";
 	}
 }
