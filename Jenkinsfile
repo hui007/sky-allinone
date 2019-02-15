@@ -9,6 +9,7 @@ pipeline {
         stage('Build') {
             steps {
                 // sh 'mvn -B -DskipTests clean package'
+                echo '先不要打包，测试部署'
             }
         }
         stage('Deliver') { 
