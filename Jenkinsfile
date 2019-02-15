@@ -17,7 +17,7 @@ pipeline {
                 // sh 'sudo ./jenkins/scripts/deliver.sh' 
                 sh 	'''
                 	echo "准备执行部署脚本"
-                	sudo ./jenkins/scripts/deliver.sh
+                	sh ./jenkins/scripts/deliver.sh
             	'''
             }
         }
