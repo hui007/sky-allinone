@@ -5,7 +5,7 @@ pipeline {
             args '-v /Users/jianghui/.m2:/root/.m2'
         }
     } */
-    agent none
+    agent any
     stages {
         stage('Build') {
         	agent {
