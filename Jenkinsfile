@@ -4,7 +4,7 @@ pipeline {
             image 'maven:3-alpine'
             args '-v /Users/jianghui/.m2:/root/.m2'
         }
-    } */
+    } 不能使用这个，否则在部署脚本里会找不到scp命令，因为maven docker里没有这个命令*/
     agent any
     stages {
         stage('Build') {
@@ -20,6 +20,7 @@ pipeline {
             }
         }
         stage('Deliver') { 
+        	// 需要将主机的~/.ssh映射到jenkins docker的~/.ssh
             steps {
                 // sh 'sudo ./jenkins/scripts/deliver.sh' 
                 sh './jenkins/scripts/deliver.sh'
