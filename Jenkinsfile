@@ -1,12 +1,19 @@
 pipeline {
-    agent {
+    /* agent {
         docker {
             image 'maven:3-alpine'
             args '-v /Users/jianghui/.m2:/root/.m2'
         }
-    }
+    } */
+    agent none
     stages {
         stage('Build') {
+        	agent {
+                docker {
+		            image 'maven:3-alpine'
+		            args '-v /Users/jianghui/.m2:/root/.m2'
+		        }
+            }
             steps {
                 // sh 'mvn -B -DskipTests clean package'
                 echo '先不要打包，测试部署'
