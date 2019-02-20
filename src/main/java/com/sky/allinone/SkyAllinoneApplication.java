@@ -1,4 +1,4 @@
-package com.sky.mybatis;
+package com.sky.allinone;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
