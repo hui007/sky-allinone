@@ -5,45 +5,28 @@
 同时在pom.xml里排除掉spring-boot-starter-logging，以便使用log4j
 -->
 	<Properties>
-		<Property name="PID">????</Property>
+		<Property name="PID">123</Property>
 		<Property name="LOG_EXCEPTION_CONVERSION_WORD">%xwEx</Property>
 		<Property name="LOG_LEVEL_PATTERN">%5p</Property>
 		<Property name="CONSOLE_LOG_PATTERN">%clr{%d{yyyy-MM-dd HH:mm:ss.SSS}}{faint} %clr{${LOG_LEVEL_PATTERN}} %clr{${sys:PID}}{magenta} %clr{---}{faint} %clr{[%15.15t]}{faint} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
 		<Property name="FILE_LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN} ${sys:PID} --- [%t] %-40.40c{1.} : %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
 	</Properties>
 	<appenders>
-		<Console name="Console" target="SYSTEM_OUT" follow="true">
-			<PatternLayout pattern="${sys:CONSOLE_LOG_PATTERN}" />
-		</Console>
 		<!-- <Console name="Console" target="SYSTEM_OUT" follow="true">
+			<PatternLayout pattern="${sys:CONSOLE_LOG_PATTERN}" />
+		</Console> -->
+		<Console name="Console" target="SYSTEM_OUT" follow="true">
 			<PatternLayout
 				pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
-		</Console> -->
-		<Console name="StudentMapperConsole" target="SYSTEM_OUT" follow="true">
+		</Console>
+		<!-- <Console name="StudentMapperConsole" target="SYSTEM_OUT" follow="true">
 			<PatternLayout
 				pattern="ddd %date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
-		</Console>
+		</Console> -->
 	</appenders>
 
 	<Loggers>
-		<Logger name="org.apache.catalina.startup.DigesterFactory" level="error" />
-		<Logger name="org.apache.catalina.util.LifecycleBase" level="error" />
-		<Logger name="org.apache.coyote.http11.Http11NioProtocol" level="warn" />
-		<logger name="org.apache.sshd.common.util.SecurityUtils" level="warn"/>
-		<Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="warn" />
-		<Logger name="org.crsh.plugin" level="warn" />
-		<logger name="org.crsh.ssh" level="warn"/>
-		<Logger name="org.eclipse.jetty.util.component.AbstractLifeCycle" level="error" />
-		<Logger name="org.hibernate.validator.internal.util.Version" level="warn" />
-		<logger name="org.springframework.boot.actuate.autoconfigure.CrshAutoConfiguration" level="warn"/>
-		<logger name="org.springframework.boot.actuate.endpoint.jmx" level="warn"/>
-		<logger name="org.thymeleaf" level="warn"/>
-		
-		<logger name="com.sky.movie" level="info"></logger>
-		<logger name="com.sky.movie.mybatisSpring.data.UserMapper1" level="TRACE">
-			<appender-ref ref="StudentMapperConsole" />
-		</logger>
-		<logger name="org.springframework.web" level="debug"></logger>
+		<!-- <logger name="org.springframework.web" level="debug"></logger> -->
 		
 		<Root level="info">
 			<AppenderRef ref="Console" />
