@@ -3,13 +3,7 @@ package com.sky.allinone.mvc.controller;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.sky.allinone.mvc.vo.BusinessNoticeBean;
-import com.sky.mybatis.mybatisSpringBootCommonMapper.domain.GradeEvent;
+import com.sky.allinone.dao.entity.GradeEvent;
 
 /**
  * 控制器直接返回客户端需要的数据表述，不经过视图名-视图渲染这个过程。
@@ -111,58 +104,5 @@ public class RestfulController {
 		
 		ResponseEntity<GradeEvent> responseEntity = new ResponseEntity<GradeEvent>(e, header, HttpStatus.CREATED);
 		return responseEntity;
-	}
-	
-	@RequestMapping(value = "aplipay/app/async/pay", method = RequestMethod.POST)
-	public String alipayAppCallback(HttpServletRequest request, HttpServletResponse response) {
-		Map requestParams = request.getParameterMap();
-		logger.info("接收到支付宝app支付异步通知。requestParams：{}", requestParams);
-		
-		Map<String,String> transParams = new HashMap<String,String>();
-		// 继续校验
-		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
-		    String name = (String) iter.next();
-		    String[] values = (String[]) requestParams.get(name);
-		    String valueStr = "";
-		    for (int i = 0; i < values.length; i++) {
-		        valueStr = (i == values.length - 1) ? valueStr + values[i]
-		                    : valueStr + values[i] + ",";
-		  	}
-		    // 乱码解决，这段代码在出现乱码时使用。
-			//valueStr = new String(valueStr.getBytes("ISO-8859-1"), "utf-8");
-			transParams.put(name, valueStr);
-		}
-		logger.info("接收到支付宝app支付异步通知。transParams：{}", transParams);
-		
-		return "success";
-	}
-	
-	@RequestMapping(value = "wx/app/async/pay", method = RequestMethod.POST, consumes = "text/xml")
-	public String wxAppCallback(@RequestBody String xml) {
-		logger.info("接收到微信app支付异步通知。xmlStr：{}", xml);
-		
-		return "success";
-	}
-	
-	@RequestMapping(value = "wx/app/async/pay2", method = RequestMethod.POST)
-	public String wxAppCallback2(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("接收到微信app支付异步通知2。xmlStr：{}");
-		
-		return "success";
-	}
-	
-	@RequestMapping(value = "wx/app/async/pay3", method = RequestMethod.POST)
-	public String wxAppCallback3(@RequestBody String xml, HttpServletRequest request, HttpServletResponse response) {
-		logger.info("接收到微信app支付异步通知2。xmlStr：{}");
-		
-		return "success";
-	}
-	
-	@RequestMapping(value = "/lianlianpay/receiveNotify", method = RequestMethod.POST)
-	@ResponseBody
-	public String lianlianpayReceiveNotify(@RequestBody BusinessNoticeBean businessNoticeBean,  HttpServletResponse resp,
-			HttpServletRequest request) {
-		logger.info("notify request:" + businessNoticeBean.toString());
-		return "{\"ret_code\":\"0000\", \"ret_msg\":\"交易成功\"}";
 	}
 }

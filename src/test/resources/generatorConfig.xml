@@ -156,3 +156,175 @@
 		
 	</context>
 </generatorConfiguration>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+	<context id="Mysql" targetRuntime="MyBatis3Simple"
+		defaultModelType="flat">
+		<property name="beginningDelimiter" value="`" />
+		<property name="endingDelimiter" value="`" />
+
+		<!-- 为继承的BaseMapper接口添加对应的实现类 -->
+		<plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+			<property name="mappers" value="com.sky.allinone.dao.CustomBaseMapper" />
+		</plugin>
+
+		<!-- <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/bookshop" userId="bookshopadm"
+			password="bookshopdb">
+		</jdbcConnection> -->
+
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/sampdb" userId="sampadm"
+			password="sampdb">
+		</jdbcConnection>
+
+		<javaModelGenerator targetPackage="com.sky.allinone.dao.entity" targetProject="src/main/java">
+		   <property name="rootClass" value="com.sky.allinone.dao.entity.BaseEntity"/>
+		</javaModelGenerator>
+			
+		<sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources" />
+		<javaClientGenerator targetPackage="com.sky.allinone.dao.mapper"
+			targetProject="src/main/java" type="XMLMAPPER" />
+			
+		<!--
+		<table tableName="student" domainObjectName="Student">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+		
+		<table tableName="user" domainObjectName="User">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+		
+		<table tableName="book" domainObjectName="Book">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+		
+		<table tableName="acc_user" domainObjectName="AccUser">
+			<generatedKey column="id" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		<table tableName="acc_userverify" domainObjectName="AccUserverify">
+			<generatedKey column="id" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		<table tableName="cbd_company" domainObjectName="CbdCompany">
+			<generatedKey column="id" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		<table tableName="cbd_companyroster" domainObjectName="CbdCompanyroster">
+			<generatedKey column="id" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		<table tableName="cbd_file" domainObjectName="CbdFile">
+			<generatedKey column="id" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		<table tableName="cbd_invorder" domainObjectName="CbdInvorder">
+			<generatedKey column="id" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		<table tableName="cbd_invorderdet" domainObjectName="CbdInvorderdet">
+			<generatedKey column="id" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		<table tableName="cbd_memo" domainObjectName="CbdMemo">
+			<generatedKey column="id" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		<table tableName="cbd_objfile" domainObjectName="CbdObjfile">
+			<generatedKey column="id" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		<table tableName="cbd_qrcode" domainObjectName="CbdQrcode">
+			<generatedKey column="uuid" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		<table tableName="cbd_sasettings" domainObjectName="CbdSasettings">
+			<generatedKey column="superadmin" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		<table tableName="cbd_statushist" domainObjectName="CbdStatushist">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+		
+		<table tableName="cbd_taxrule" domainObjectName="CbdTaxrule">
+			<generatedKey column="id" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		<table tableName="sys_actcode" domainObjectName="SysActcode">
+			<generatedKey column="id" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		<table tableName="sys_area" domainObjectName="SysArea">
+			<generatedKey column="id" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		<table tableName="sys_feedback" domainObjectName="SysFeedback">
+			<generatedKey column="id" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		<table tableName="sys_gencode" domainObjectName="SysGencode">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+		
+		<table tableName="sys_inflog" domainObjectName="SysInflog">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+		
+		
+		<table tableName="sys_kv" domainObjectName="SysKv">
+			<generatedKey column="k" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		
+		<table tableName="sys_menu" domainObjectName="SysMenu">
+			<generatedKey column="id" sqlStatement="Mysql" identity="false" />
+		</table>
+		
+		<table tableName="sys_option" domainObjectName="SysOption">
+			<generatedKey column="k" sqlStatement="Mysql" identity="false" />
+		</table>
+		<table tableName="cbd_trade_names" domainObjectName="CbdTradeNames"></table>
+		<table tableName="sys_role" domainObjectName="SysRole">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+		<table tableName="sys_resources" domainObjectName="SysResource">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+		<table tableName="customer_level" domainObjectName="CustomerLevel">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+		<table tableName="biz_branch" domainObjectName="BizBranch">
+		</table>
+		<table tableName="import_order_items" domainObjectName="ImportOrderItem">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+		<table tableName="attachments" domainObjectName="Attachments">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+		<table tableName="attachments" domainObjectName="Attachments">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+		<table tableName="deposit_logs" domainObjectName="DepositLog">
+		</table> 
+		<table tableName="task_jms_error" domainObjectName="TaskJmsError">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+		
+		<table tableName="invoice_user_info" domainObjectName="InvoiceUserInfo">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+		<table tableName="bcs_batch" domainObjectName="BcsBatch">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+		<table tableName="bcs_card" domainObjectName="BcsCard">
+			<generatedKey column="id" sqlStatement="Mysql" identity="true" />
+		</table>
+		-->
+		
+	</context>
+</generatorConfiguration>

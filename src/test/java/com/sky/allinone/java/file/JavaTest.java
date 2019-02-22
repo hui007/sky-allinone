@@ -2,75 +2,14 @@ package com.sky.allinone.java.file;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
-import org.mockito.internal.util.collections.Sets;
 
 public class JavaTest {
-	@Test
-	public void testLambda() {
-		String s = "'180428001714669','180428001714668','180428001714662','180508001725282','180508001725281','180508001725280','180508001725279','180508001725278','180508001725277','180508001725273','180508001725269','180508001725268','180810001910619','180810001910566','180810001910564','180813001912936','180827001940884','180827001940883','180827001940882','180827001940881','180919001995078','180919001995077','180919001995076','180919001995075','180919001995078','180919001995077','180919001995076','180919001995075','181024002092294','181024002092112','181024002092086','181024002092079','181024002092076','181024002092073','181024002092070','181024002092062','181024002092049','181024002092046','181024002092023','181024002092020','181024002092011','181024002092000','181024002091994'";
-		String[] arr = s.split(",");
-		
-		Set<String> set = Sets.newSet(arr);
-		System.out.println(set.size());
-		
-		List<String> list = Arrays.asList(arr);
-		Map<String, String> map = list.stream().collect(Collectors.toMap(String::toString, Function.identity(), (v1, v2) -> v2));
-		System.out.println(map);
-		
-		Map<String, Integer> map1 = list.stream().collect(Collectors.toMap(String::toString, a -> 1, (v1, v2) -> v1 + v2));
-		System.out.println(map1);
-	}
-	
-	/**
-	 * 解析已有文件，根据文件名里的日期，按天生成汇总文件，汇总文件里包含当天所有的文件名
-	 * @throws IOException
-	 */
-	@Test
-	public void testFile3() throws IOException {
-		File srcDir1 = new File("/Users/jianghui/Downloads/pingan-12");
-//		File srcDir2 = new File("/Users/jianghui/Downloads/khkf01_15199032155530");
-		File destDir1 = new File("/Users/jianghui/Downloads/done");
-		if (!destDir1.exists()) {
-			destDir1.mkdirs();
-		}
-		
-		Collection<File> listFiles = FileUtils.listFiles(srcDir1, null, false);
-//		listFiles.addAll(FileUtils.listFiles(srcDir2, null, false));
-		Iterator<File> iterateFiles = listFiles.iterator();
-		
-		while (iterateFiles.hasNext()) {
-			File fileSrc = iterateFiles.next();
-			String[] split = fileSrc.getName().substring(0, fileSrc.getName().indexOf(".")).split("_");
-			if (StringUtils.equals("aiyunchang", split[0]) || StringUtils.equals("C005", split[1])) {
-				continue;
-			}
-			
-			File destFile = new File(destDir1.getAbsolutePath() + "/" + split[3] + ".DONE");
-			if (destFile.exists()) {
-				FileUtils.writeStringToFile(destFile, "|::|" + fileSrc.getName(), true);
-			} else {
-				destFile.createNewFile();
-				FileUtils.writeStringToFile(destFile, fileSrc.getName(), false);
-			}
-		}
-	}
-	
 	@Test
 	public void testFile1() throws IOException {
 		File srcDir = new File("/Users/jianghui/Downloads/汇付回单凭证0626");
