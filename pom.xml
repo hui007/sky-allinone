@@ -258,6 +258,45 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<!-- 
+				没有彻底测试过这个插件，官网推荐使用dockerfile-maven-plugin
+				maven命令：clean package docker:build  -DskipTests -X
+				在mac会碰到找不到docker-credential-osxkeychain命令：参考So what I did is added PATH="/usr/local/bin/" in IntelliJ's Run Configuration (Environment field) and it is started to work
+				 -->
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>1.2.0</version>
+				<configuration>
+					<imageName>sky/${project.artifactId}:${project.version}</imageName>
+					<baseImage>java</baseImage>
+					<entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
+					<!-- copy the service's jar file from target into the root directory of 
+						the image -->
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+				</configuration>
+			</plugin>
+			<plugin>
+				<!-- 
+				maven命令：clean package dockerfile:build  -DskipTests -X
+				在mac会碰到找不到docker-credential-osxkeychain命令：参考So what I did is added PATH="/usr/local/bin/" in IntelliJ's Run Configuration (Environment field) and it is started to work
+				 -->
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>1.4.10</version>
+				<configuration>
+					<buildArgs>
+						<!-- 不要使用${project.build.directory}这样的绝对路径：https://github.com/spotify/dockerfile-maven/issues/101 -->
+						<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+					</buildArgs>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
