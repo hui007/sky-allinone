@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="INFO" monitorInterval="1800" shutdownHook="disable">
-<!-- 需要配置系统属性：
+<!-- 需要配置系统属性：（注：实际测试，不加这个系统属性也可以）
 -Dorg.springframework.boot.logging.LoggingSystem=org.springframework.boot.logging.log4j2.Log4J2LoggingSystem 
 同时在pom.xml里排除掉spring-boot-starter-logging，以便使用log4j
 -->

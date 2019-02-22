@@ -43,7 +43,7 @@ management:
     roles:
     - userRole
   context-path: /manage
-debug: true
+#debug: true
 server:
   port: 8081
   servlet-path: / #dispatchServlet拦截的url。还有一种方式是自定义一个ServletRegistrationBean
@@ -67,6 +67,7 @@ server:
 #https://docs.spring.io/spring-boot/docs/1.4.7.RELEASE/reference/htmlsingle/#boot-features-logging 26章
 #显式切换日志组件，默认是logback，logback的配置文件在spring发行包里是自带的，可以使用属性或者xml文件调整logback的配置
 #见spring-boot-1.5.8包里的org.springframework.boot.logging.log4j2、org.springframework.boot.logging.logback、org.springframework.boot.logging.java等
+#log4j2的日志级别会被这个配置文件里的debug属性覆盖
 logging:
 #  config: classpath:log4j2.xml
   config: classpath:log4j2-file.xml
