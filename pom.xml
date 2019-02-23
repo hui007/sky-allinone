@@ -284,13 +284,19 @@
 			</plugin>
 			<plugin>
 				<!-- 
-				maven命令：clean package dockerfile:build  -DskipTests -X
+				maven命令：clean package dockerfile:build  -DskipTests  -X。
+					不运行junit测试，可加-Ddockerfile.skip不运行本docker插件
 				在mac会碰到找不到docker-credential-osxkeychain命令：参考So what I did is added PATH="/usr/local/bin/" in IntelliJ's Run Configuration (Environment field) and it is started to work
 				 -->
 				<groupId>com.spotify</groupId>
 				<artifactId>dockerfile-maven-plugin</artifactId>
 				<version>1.4.10</version>
 				<configuration>
+					<!-- 本地镜像，如果不push到docker hub的话，这个名字随便起 -->
+					<repository>sky/${project.artifactId}</repository>
+					<!-- 可以将docker推送到docker仓库，不使用maven配置方式推送到docker hub没有成功，后续可以尝试使用useMavenSettingsForAuth推送，参考网址（https://github.com/spotify/dockerfile-maven/blob/master/docs/authentication.md）
+					<repository>joshui/sky-allinone</repository> -->
+    				<tag>${project.version}</tag>
 					<buildArgs>
 						<!-- 不要使用${project.build.directory}这样的绝对路径：https://github.com/spotify/dockerfile-maven/issues/101 -->
 						<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
