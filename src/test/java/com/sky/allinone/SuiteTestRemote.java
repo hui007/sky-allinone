@@ -17,7 +17,7 @@ import com.sky.allinone.webSocket.WebSocketTest;
 
 /**
  * 这些测试用例需要先启动springboot应用，作为客户端调用远程应用
- * 必须激活remote profile
+ * 必须激活remote profile  -Dspring.profiles.active=remote
  * @author joshui
  *
  */

@@ -11,6 +11,7 @@ import java.util.Iterator;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
 import org.omg.IOP.Encoding;
 
 import com.itextpdf.text.Document;
@@ -43,6 +44,11 @@ public class PDFTest {
 
 	/** The resulting PDF file. */
 	public static final String DEST = "/Users/jianghui/Downloads/20171009_0901_010_15000082040406-new.pdf";
+	
+	@Test
+	public void testPDF() {
+		
+	}
 
 	/**
 	 * Manipulates a PDF file src with the file dest as result
