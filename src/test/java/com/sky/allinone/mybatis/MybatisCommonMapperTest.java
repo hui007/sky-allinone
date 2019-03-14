@@ -25,6 +25,7 @@ import com.sky.allinone.service.CommonMapperService;
 
 /**
  * 集成spring boot，测试common mapper，动态数据源
+ * 没有使用内嵌数据库，需要启动本机mysql数据库，本机mysql的测试数据库脚本后续可考虑放到git上
  * TODO 并没有使用common mapper里的Example类
  * @author joshui
  *
@@ -58,7 +59,7 @@ public class MybatisCommonMapperTest {
 	 * 动态：使用切面动态切换数据源，这也是本项目使用的方式
 	 * 静态：定义多个mybatis sessionFactory，每个sessionFactory配置不同的数据源且扫描不同的mapper目录
 	 */
-	@Test
+	@Test(timeout = 1000 * 60)
 	public void testDynamicQuery() {
 		List<GradeEvent> selectAll = commonMapperService.selectGradeEvents();
 		assertThat(selectAll.size()).isEqualTo(6);
@@ -74,7 +75,7 @@ public class MybatisCommonMapperTest {
 	/**
 	 * 测试自定义SQL
 	 */
-	@Test
+	@Test(timeout = 1000 * 60)
 	public void testCustomizQuery() {
 		List<User> selectAll = commonMapperService.findByCustomizeSQl();
 		assertThat(selectAll.size()).isEqualTo(2);
@@ -88,7 +89,7 @@ public class MybatisCommonMapperTest {
 	 * 本项目使用了动态数据源，导致本方法测试不通过，会报“在系统中发现了多个分页插件，请检查系统配置!”，所以只能采用方法参数那种方式
 	 * 测试不通过的原因，可能是动态数据源和分页插件都是用了threadlocal变量？
 	 */
-	@Test(expected = MyBatisSystemException.class)
+	@Test(expected = MyBatisSystemException.class, timeout = 1000 * 60)
 //	@Ignore
 	@SuppressWarnings("unused")
 	public void testQueryPage() {
@@ -107,7 +108,7 @@ public class MybatisCommonMapperTest {
 		assertThat(users.get(0).getName()).isEqualTo("admin");
 	}
 	
-	@Test
+	@Test(timeout = 1000 * 60)
 	public void testQueryPageParam() {
 		List<User> users = userMapper.getUserByPageParam(1, 1);
 		

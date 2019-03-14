@@ -49,7 +49,7 @@ public class KafkaTest {
 	@Autowired
 	private KafkaReceiver kafkaReceiver;
 	
-	@Test
+	@Test(timeout = 1000 * 60)
 	public void useJava() throws Exception {
 		logger.info("开始测试useJava");
 		
@@ -88,7 +88,7 @@ public class KafkaTest {
 
 	}
 	
-	@Test
+	@Test(timeout = 1000 * 60)
 	public void useSpringboot() throws Exception {
 		kafkaSender.sendMessage(topic1, "来自springboot");
 		assertTrue(kafkaReceiver.getLatch1().await(60, TimeUnit.SECONDS));
