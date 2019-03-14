@@ -35,6 +35,11 @@
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-logging</artifactId>
 				</exclusion>
+				<!-- 原本想通过这种方式，同时单独引入spring-data-elasticsearch解决springboot1.5.8支持的es版本太低的问题，但是不成功 -->
+				<!-- <exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+				</exclusion> -->
 			</exclusions>
 		</dependency>
 		
@@ -61,21 +66,43 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>1.1.9</version>
-		</dependency>
-		
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
+		
+		<!-- elasticsearch start -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>
+				spring-boot-starter-data-elasticsearch
+			</artifactId>
+		</dependency>
+		<!-- 使用内嵌的es服务器，必须要引入这个jar -->
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+		</dependency>
+		<!-- springboot1.5.8支持的es版本太低，想使用这种方式屏蔽掉springboot自带的spring-boot-starter-data-elasticsearch，但是还是遇到了兼容性问题。
+			考虑了三种思路：升级springboot、使用elasticsearch jest、或者其他的不集成进入springboot的其他方式。现在决定升级springboot到2.x
+		 -->
+		<!-- <dependency>
+		    <groupId>org.springframework.data</groupId>
+		    <artifactId>spring-data-elasticsearch</artifactId>
+		    <version>3.1.0.RELEASE</version>$NO-MVN-MAN-VER$
+		</dependency> -->
+		<!-- elasticsearch end -->
 		
 		<!-- commons-io -->
 		<dependency>
 		    <groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.1.9</version>
 		</dependency>
 		
 		<!-- kafka -->

@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -22,12 +24,14 @@ import org.springframework.util.StringUtils;
 
 // 禁用掉默认的数据源获取方式，默认会读取配置文件的数据源（spring.datasource.*)。不禁用掉的话，动态数据源初始化的时候会报异常
 @SpringBootApplication(exclude = {  
-        DataSourceAutoConfiguration.class  
+        DataSourceAutoConfiguration.class
 })  
 // 切面
 @EnableAspectJAutoProxy
 // 不使用mybatis的MapperScan。并且不能扫描到CustomBaseMapper，否则会报错
 @tk.mybatis.spring.annotation.MapperScan(basePackages = "com.sky.allinone.dao.mapper")
+// 引入elasticSearch
+@EnableElasticsearchRepositories(basePackages = "com.sky.allinone.elasticsearch.repositories")
 // 演示引入xml配置文件
 @ImportResource(locations={"classpath:application-bean.xml"})
 public class SkyAllinoneApplication {
