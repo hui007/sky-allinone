@@ -40,6 +40,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
+import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -67,7 +68,7 @@ import com.sky.allinone.service.CommonMapperService;
 import com.sky.allinone.service.MethodSecurityService;
 
 @RunWith(SpringRunner.class)
-// 跑这个用例前，先去掉SkyAllinoneApplication里的@EnableElasticsearchRepositories，否则会出现elasticTemplate实例化不了的错误
+// 跑这个用例前，先去掉SkyAllinoneApplication里的@EnableElasticsearchRepositories，或者给所有的es elastic repository接口加上@NoRepositoryBean注解， 否则会出现elasticTemplate实例化不了的错误
 @WebMvcTest({HomeController.class, FileController.class})
 @Import({WebConfig.class, DynamicDataSourceConfig.class})
 public class SpringMvcTest {

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -25,6 +26,7 @@ import org.springframework.util.StringUtils;
 // 禁用掉默认的数据源获取方式，默认会读取配置文件的数据源（spring.datasource.*)。不禁用掉的话，动态数据源初始化的时候会报异常
 @SpringBootApplication(exclude = {  
         DataSourceAutoConfiguration.class
+        ,ElasticsearchAutoConfiguration.class, ElasticsearchDataAutoConfiguration.class
 })  
 // 切面
 @EnableAspectJAutoProxy

@@ -7,6 +7,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
+import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.sky.allinone.elasticsearch.service.ElasticsearchService;
@@ -27,20 +29,25 @@ import com.sky.allinone.elasticsearch.service.ElasticsearchService;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ElasticsearchTest {
-	@Autowired
+	@Autowired(required = false)
 	private ElasticsearchTemplate elasticsearchTemplate;
 	@Autowired
 	private ElasticsearchService service;
 	
 	@Test
 	public void testExists() {
-		assertThat(elasticsearchTemplate).isNotNull();
+		assertThat(elasticsearchTemplate).isNull();
 		assertThat(service).isNotNull();
 	}
 	
 	/**
 	 * 测试spring根据repository接口自动生成的repository代理
 	 * 会自动生成很多常用的查询方法
+	 * 
+	 * 需要放开：
+	 * SkyAllinoneApplication里的@EnableElasticsearchRepositories、exclude
+	 * CustomerRepository里的@NoRepositoryBean
+	 * pom里的spring-boot-starter-data-elasticsearch
 	 */
 	@Test
 	public void testRepository() {
