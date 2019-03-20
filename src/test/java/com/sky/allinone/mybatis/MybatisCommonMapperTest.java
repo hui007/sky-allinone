@@ -57,6 +57,11 @@ public class MybatisCommonMapperTest {
 	 * 测试查询：主从数据源自动切换
 	 * 有两种方式切换数据源：
 	 * 动态：使用切面动态切换数据源，这也是本项目使用的方式
+	 * 	定义一个数据源上下文holder静态类，在类里定义threadLocal变量，用于存放数据源名称
+	 * 	定义一个动态DataSource，继承spring的AbstractRoutingDataSource，动态DataSource读取threadLocal变量里的数据源名称
+	 * 	定义一个mybatis的sessionFactory，sessionFactory使用上面定义的动态DataSource
+	 * 	定义数据源注解，注解使用到方法层面，决定使用哪个数据源，设置默认使用的数据源
+	 * 	定义一个切面，关注点为自定义的数据源注解，在切面里根据注解里使用的数据源名称，动态改变threadLocal变量里的数据源名称
 	 * 静态：定义多个mybatis sessionFactory，每个sessionFactory配置不同的数据源且扫描不同的mapper目录
 	 */
 	@Test(timeout = 1000 * 60)
