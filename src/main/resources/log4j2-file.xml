@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
 	<Properties>
+		<Property name="LOG_FILE">allinone.log</Property>
+		<Property name="LOG_PATH">log</Property>
 		<Property name="PID">????</Property>
 		<Property name="LOG_EXCEPTION_CONVERSION_WORD">%xwEx</Property>
 		<Property name="LOG_LEVEL_PATTERN">%5p</Property>
@@ -15,6 +17,7 @@
 			<PatternLayout
 				pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
 		</Console>
+		<!-- 如果没有设置系统属性sys:LOG_FILE，则默认使用本xml里定义的LOG_FILE属性 -->
 		<RollingFile name="File" fileName="${sys:LOG_FILE}" filePattern="${sys:LOG_PATH}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
 			<PatternLayout>
 				<Pattern>${sys:FILE_LOG_PATTERN}</Pattern>
