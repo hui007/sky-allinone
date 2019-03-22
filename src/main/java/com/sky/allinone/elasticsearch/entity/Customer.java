@@ -2,14 +2,17 @@ package com.sky.allinone.elasticsearch.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
-//@Document(indexName = "es-customer", type = "customer", shards = 2, replicas = 1, refreshInterval = "-1")
-@Document(indexName = "es-customer", type = "customer")
+@Document(indexName = "es-customer", type = "customer", shards = 2, replicas = 2, refreshInterval = "-1")
+//@Document(indexName = "es-customer", type = "customer")
 public class Customer {
 
     @Id
     private String id;
 
+    @Field(type=FieldType.String)
     private String firstName;
 
     private String lastName;

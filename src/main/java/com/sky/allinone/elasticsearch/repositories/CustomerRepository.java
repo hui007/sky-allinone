@@ -7,7 +7,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 import com.sky.allinone.elasticsearch.entity.Customer;
 
-@NoRepositoryBean
+//@NoRepositoryBean
 public interface CustomerRepository extends ElasticsearchRepository<Customer, String> {
 
     public List<Customer> findByFirstName(String firstName);

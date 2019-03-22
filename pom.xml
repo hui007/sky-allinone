@@ -82,8 +82,13 @@
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
 		</dependency>
+		<!-- <dependency>
+		  <groupId>io.searchbox</groupId>
+		  <artifactId>jest</artifactId>
+		  <version>6.3.0</version>$NO-MVN-MAN-VER$
+		</dependency> -->
 		<!-- springboot1.5.8支持的es版本太低，想使用这种方式屏蔽掉springboot自带的spring-boot-starter-data-elasticsearch，但是还是遇到了兼容性问题。
-			考虑了三种思路：升级springboot、使用elasticsearch jest、或者其他的不集成进入springboot的其他方式。现在决定升级springboot到2.x
+			考虑了三种思路：升级springboot、使用elasticsearch jest、或者其他的不集成进入springboot的其他方式
 		 -->
 		<!-- <dependency>
 		    <groupId>org.springframework.data</groupId>

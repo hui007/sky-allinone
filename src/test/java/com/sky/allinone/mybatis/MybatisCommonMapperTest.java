@@ -62,6 +62,7 @@ public class MybatisCommonMapperTest {
 	 * 	定义一个mybatis的sessionFactory，sessionFactory使用上面定义的动态DataSource
 	 * 	定义数据源注解，注解使用到方法层面，决定使用哪个数据源，设置默认使用的数据源
 	 * 	定义一个切面，关注点为自定义的数据源注解，在切面里根据注解里使用的数据源名称，动态改变threadLocal变量里的数据源名称
+	 * 	未实测（在本项目没出现）：设置事务切面和动态数据源切面的执行顺序，不然会导致动态数据源切换不了。@EnableTransactionManagement(order = 2) 、@Order(1)
 	 * 静态：定义多个mybatis sessionFactory，每个sessionFactory配置不同的数据源且扫描不同的mapper目录
 	 */
 	@Test(timeout = 1000 * 60)
