@@ -1,42 +1,26 @@
 package com.sky.allinone.java.file;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.util.Iterator;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
-import org.omg.IOP.Encoding;
-
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.exceptions.UnsupportedPdfException;
-import com.itextpdf.text.pdf.PRAcroForm;
-import com.itextpdf.text.pdf.PRStream;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfDictionary;
-import com.itextpdf.text.pdf.PdfImportedPage;
-import com.itextpdf.text.pdf.PdfName;
-import com.itextpdf.text.pdf.PdfObject;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfStamper;
-import com.itextpdf.text.pdf.PdfTemplate;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.parser.FilteredTextRenderListener;
-import com.itextpdf.text.pdf.parser.LocationTextExtractionStrategy;
-import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
-import com.itextpdf.text.pdf.parser.PdfTextExtractor;
-import com.itextpdf.text.pdf.parser.RegionTextRenderFilter;
-import com.itextpdf.text.pdf.parser.RenderFilter;
-import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
-import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
+import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.pdf.parser.*;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.CellType;
+import org.junit.Test;
+import org.springframework.util.FileCopyUtils;
+
+import java.io.*;
+import java.util.*;
 
 public class PDFTest {
 	/** The original PDF file. */
@@ -44,15 +28,15 @@ public class PDFTest {
 
 	/** The resulting PDF file. */
 	public static final String DEST = "/Users/jianghui/Downloads/20171009_0901_010_15000082040406-new.pdf";
-	
+
 	@Test
 	public void testPDF() {
-		
+
 	}
 
 	/**
 	 * Manipulates a PDF file src with the file dest as result
-	 * 
+	 *
 	 * @param src
 	 *            the original PDF
 	 * @param dest
@@ -194,12 +178,15 @@ public class PDFTest {
 	/**
 	 * 可用
 	 * 按照高度拆分pdf每页内容
+	 * @param excel
 	 * @param src
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	private void pdfSplitedBy3(String src) throws IOException, DocumentException {
-		PdfReader reader = new PdfReader(src);
+	private void pdfSplitedBy3(File srcFile, Map<String, List<Map<Integer, String>>> excel) throws IOException, DocumentException {
+		String destDirRoot = "/Users/jianghui/Downloads/平安爱洋回单凭证-0411/aiyang-pingan-2019/";
+		String srcPath = srcFile.getAbsolutePath();
+		PdfReader reader = new PdfReader(srcPath );
 		int n = reader.getNumberOfPages();
 
 		// String contentStr1 = PdfTextExtractor.getTextFromPage(reader, 1);
@@ -215,7 +202,7 @@ public class PDFTest {
 		Rectangle mediabox = new Rectangle(getHalfPageSize4(reader.getPageSizeWithRotation(1)));
 		for (int i = 1; i <= n; i++) {
 			ts = parser.processContent(i, new SimpleTextExtractionStrategy());
-			substringsBetween = StringUtils.substringsBetween(ts.getResultantText(), "15000082040406\n", "\n");
+			substringsBetween = StringUtils.substringsBetween(ts.getResultantText(), "15000092918271\n", "\n");
 			// ArrayUtils.reverse(substringsBetween);
 
 			for (int j = substringsBetween.length - 1; j >= 0; j--) {
@@ -236,8 +223,36 @@ public class PDFTest {
 				Document document = new Document(mediabox);
 				// String destFileName = src.replace(".pdf", "-" +
 				// (destNameIndex++) + ".pdf");
-				String destFileName = src.replace(".pdf",
-						"-" + substringsBetween[substringsBetween.length - 1 - j] + ".pdf");
+//				String destFileName = srcPath.replace(".pdf",
+//						"-" + substringsBetween[substringsBetween.length - 1 - j] + ".pdf");
+				String name = substringsBetween[substringsBetween.length - 1 - j];
+
+				// 丢到相应的客户公司里
+				List<Map<Integer, String>> list = excel.get(name);
+				if (list == null) {
+//					System.out.println("未找到：" + srcFile.getAbsolutePath() + "-" + name);
+					continue;
+				}
+				String company = list.get(0).get(0);
+				String destDir = destDirRoot + company;
+				if (!new File(destDir).exists()) {
+					new File(destDir).mkdirs();
+				}
+				destDir = destDir + File.separator;
+				String destFileName = destDir + name + ".pdf";
+
+//				String destFileName = srcFile.getParent() + File.separator + name + ".pdf";
+				if (new File(destFileName).exists()) {
+					int index = 1;
+//					destFileName = srcFile.getParent() + File.separator + name + "-" + index + ".pdf";
+					destFileName = destDir + name + "-" + index + ".pdf";
+					while(new File(destFileName).exists()){
+						index = index + 1;
+//						destFileName = srcFile.getParent() + File.separator + name + "-" + index + ".pdf";
+						destFileName = destDir + name + "-" + index + ".pdf";
+					}
+//					destFileName = srcFile.getParent() + File.separator + substringsBetween[substringsBetween.length - 1 - j] + ".pdf";
+				}
 				PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(destFileName));
 				document.open();
 
@@ -248,6 +263,29 @@ public class PDFTest {
 				// content.addTemplate(page, 0, 0);
 
 				document.close();
+
+				// 复制到其他目录去
+				for (int k = 1; k < list.size(); k++) {
+					String company1 = list.get(k).get(0);
+					String destDir1 = destDirRoot + File.separator + company1;
+					if (!new File(destDir1).exists()) {
+						new File(destDir1).mkdirs();
+					}
+					destDir1 = destDir1 + File.separator;
+					String destFileName1 = destDir1 + name + ".pdf";
+
+					if (new File(destFileName1).exists()) {
+						int index = 1;
+						destFileName1 = destDir1 + name + "-" + index + ".pdf";
+						while(new File(destFileName1).exists()){
+							index = index + 1;
+							destFileName1 = destDir1 + name + "-" + index + ".pdf";
+						}
+					}
+
+					FileCopyUtils.copy(new File(destFileName), new File(destFileName1));
+				}
+
 				// reader.close();
 				// break;
 
@@ -421,16 +459,185 @@ public class PDFTest {
 		}
 	}
 
+	@Test
+	public void testExcel() throws IOException {
+		// result1和result2必须为同一份文件
+		int keyIndex1 = 0;
+		int keyIndex2 = 0;
+		int keyIndex3 = 1;
+		Map<String, List<Map<Integer, String>>> result1 = parseExcelToMap("/Users/jianghui/Downloads/111-hf.xls", keyIndex1); // 公司id为key
+		Map<String, List<Map<Integer, String>>> result2 = parseExcelToMap("/Users/jianghui/Downloads/111-hf.xls", keyIndex2); // 业务编码为key
+//        Map<String, List<Map<Integer, String>>> result3 = parseExcelToMap("/Users/jianghui/Downloads/111-hf.xls", keyIndex3); // 业务编码为key
+		Map<String, List<Map<Integer, String>>> result3 = null; // 业务编码为key
+
+		printExcelParseResult(result1);
+		printExcelParseResult(result2);
+//        groupByTwoExcel(result1, result2, 0, 2, 3, "10248");
+		groupByOneExcel(result1, keyIndex1, 2, 3, "10424", "-v2", "10424");
+
+		if (1 == 1) {
+			return;
+		}
+
+		System.out.println(result1.keySet().toString());
+		printExcelParseResult(result1);
+		printExcelParseResult(result2);
+		printExcelParseResult(result3);
+
+		// 连接两个excel，类似于数据库的join操作。
+//        Map<String, List<String>> resultJoin = new HashMap<String, List<String>>();
+		Map<String, List<Map<Integer, String>>> resultJoin = new HashMap<String, List<Map<Integer, String>>>();
+		result2.forEach((s, maps) -> {
+//            List<String> oneCellValues = new ArrayList<String>();
+//            result3.getOrDefault(s, new ArrayList<Map<Integer, String>>()).forEach(integerStringMap -> {
+//                oneCellValues.add(integerStringMap.get(1));
+//            });
+
+			resultJoin.put(s, result3.getOrDefault(s, new ArrayList<Map<Integer, String>>()));
+		});
+		printExcelParseResult(resultJoin);
+
+		// 将已经join的结果，再按另外一个主键group
+		String curl = "curl -H \"Content-Type:application/json\" -X POST -d '{\"receiptType\": \"01\", \"busiSystemId\": \"deliver\", \"thirdpaySystemId\": \"hf\", \"payeruserId\":\"11400\", \"downloadId\":\"%s\", \"qryType\":\"1\", \"qryNos\":\"%s\"}' http://10.169.120.33:8008/front/recepit/req";
+		result1.forEach((s1, l1) -> {
+
+			List<String> resultGroup = new ArrayList<String>();
+			l1.forEach(m1 -> {
+				resultJoin.get(m1.get(keyIndex2)).forEach(mJoin -> {
+					resultGroup.add(mJoin.get(keyIndex3));
+				});
+			});
+			int groupSize = resultGroup.size();
+			System.out.println(String.format("主键：%s，包含的记录数：%d，join后的记录数：%d", s1, l1.size(), groupSize));
+			String groupStr = "";
+//            System.out.println(String.format("主键：%s，所有记录group后的结果：%s", s1, groupStr));
+			int maxNum = 2000;
+			if (groupSize > maxNum) {
+				int count = groupSize / maxNum;
+				for (int i = 0; i <= count + 1 && i * maxNum <= groupSize; i++){
+					groupStr = resultGroup.subList(i * maxNum > groupSize ? groupSize : i * maxNum, (i + 1) * maxNum > groupSize ? groupSize : (i + 1) * maxNum).toString();
+					System.out.println(String.format("" + curl, s1.trim() + "-" + i, groupStr.replaceAll("\\[|\\]|\\s", "")));
+				}
+			} else {
+				groupStr = resultGroup.toString();
+				System.out.println(String.format("" + curl, s1.trim(), groupStr.replaceAll("\\[|\\]|\\s", "")));
+			}
+		});
+	}
+
+	private void groupByOneExcel(Map<String, List<Map<Integer, String>>> result1, int keyIndex, int valueIndex,
+								 int cellIgnoreIndex1, String cellIgnoreValue1, String downloadId_postfix, String payuserId){
+		// 将已经join的结果，再按另外一个主键group
+		String curl = "curl -H \"Content-Type:application/json\" -X POST -d '{\"receiptType\": \"01\", \"busiSystemId\": \"deliver\", \"thirdpaySystemId\": \"hf\", \"payeruserId\":\"%s\", \"downloadId\":\"%s\", \"qryType\":\"1\", \"qryNos\":\"%s\"}' http://10.169.120.33:8008/front/recepit/req";
+		result1.forEach((s1, l1) -> {
+
+			List<String> resultGroup = new ArrayList<String>();
+			l1.forEach(m1 -> {
+				if (StringUtils.equals(cellIgnoreValue1, m1.get(cellIgnoreIndex1))) {
+					return;
+				}
+
+				resultGroup.add(m1.get(valueIndex));
+			});
+			int groupSize = resultGroup.size();
+			System.out.println(String.format("主键：%s，包含的记录数：%d，join后的记录数：%d", s1, l1.size(), groupSize));
+			String groupStr = "";
+//            System.out.println(String.format("主键：%s，所有记录group后的结果：%s", s1, groupStr));
+			int maxNum = 2000;
+			if (groupSize > maxNum) {
+				int count = groupSize / maxNum;
+				for (int i = 0; i <= count + 1 && i * maxNum <= groupSize; i++){
+					groupStr = resultGroup.subList(i * maxNum > groupSize ? groupSize : i * maxNum, (i + 1) * maxNum > groupSize ? groupSize : (i + 1) * maxNum).toString();
+					System.out.println(String.format("" + curl, payuserId, s1.trim() + "-" + i + StringUtils.defaultString(downloadId_postfix, ""), groupStr.replaceAll("\\[|\\]|\\s", "")));
+				}
+			} else {
+				groupStr = resultGroup.toString();
+				System.out.println(String.format("" + curl, payuserId, s1.trim() + StringUtils.defaultString(downloadId_postfix, ""), groupStr.replaceAll("\\[|\\]|\\s", "")));
+			}
+		});
+	}
+
+	private void printExcelParseResult(Map<String, List<Map<Integer, String>>> result) {
+		Map<String, Integer> resultTotalSize = new HashMap<String, Integer>();
+		resultTotalSize.put("size", 0);
+		System.out.println("主键数量：" + result.size());
+		result.forEach((s, maps) -> {
+			resultTotalSize.put("size", resultTotalSize.get("size") + maps.size());
+			System.out.println(String.format("主键：%s，包含的记录数：%s", s, maps.size() + ""));
+		});
+		System.out.println("总记录数：" + resultTotalSize.get("size"));
+	}
+
+	/*
+	 * 遍历该sheet的行，将excel转换为Map<String, List<Map<Sring, String>>>
+	 */
+	private Map<String, List<Map<Integer, String>>> parseExcelToMap(String file, int keyIndex) throws IOException {
+		Map<String, List<Map<Integer, String>>> result = new HashMap<String, List<Map<Integer, String>>>();
+		try (InputStream stream = new FileInputStream(file)){
+			//读取一个excel表的内容
+			POIFSFileSystem fs = new POIFSFileSystem(stream);
+			HSSFWorkbook wb = new HSSFWorkbook(fs);
+
+			//获取excel表的第一个sheet
+			HSSFSheet sheet = wb.getSheetAt(0);
+			if (sheet == null) {
+				return result;
+			}
+
+			//遍历该sheet的行，将excel转换为Map<String, List<Map<Sring, String>>>
+			for (int totalRowNum = 1; totalRowNum <= sheet.getLastRowNum(); totalRowNum++) {
+				HSSFRow row = sheet.getRow(totalRowNum);
+				HSSFCell keyCell = row.getCell(keyIndex);
+				CellType keyCellTypeEnum = keyCell.getCellTypeEnum();
+				String keyValue = "";
+				if (CellType.STRING.equals(keyCellTypeEnum)) {
+					keyValue = keyCell.getStringCellValue();
+				} else if(CellType.NUMERIC.equals(keyCellTypeEnum)){
+					keyValue = new Double(keyCell.getNumericCellValue()).intValue() + "";
+				}
+
+				if (!result.containsKey(keyValue)) {
+					result.put(keyValue, new ArrayList<Map<Integer, String>>());
+				}
+
+				Map<Integer, String> rowData = new HashMap<>();
+				row.forEach(cell -> {
+					CellType cellTypeEnum = cell.getCellTypeEnum();
+					if (CellType.STRING.equals(cellTypeEnum)) {
+						rowData.put(cell.getColumnIndex(), cell.getStringCellValue());
+					} else if(CellType.NUMERIC.equals(cellTypeEnum)){
+						rowData.put(cell.getColumnIndex(), cell.getNumericCellValue() + "");
+					}
+
+				});
+				result.get(keyValue).add(rowData);
+			}
+
+//            printExcelParseResult(result);
+		}
+
+		return result;
+	}
+
 	/**
 	 * Main method.
-	 * 
+	 *
 	 * @param args
 	 *            no arguments needed
 	 * @throws Throwable
 	 */
 	public static void main(String[] args) throws Throwable {
-		File file = new File(DEST);
-		file.getParentFile().mkdirs();
+		long start = System.currentTimeMillis();
+		PDFTest pdfTest = new PDFTest();
+
+		Map<String, List<Map<Integer, String>>> result1 = pdfTest.parseExcelToMap("/Users/jianghui/Downloads/pingan-company2name-2018.xls", 1); // 公司id为key
+		pdfTest.printExcelParseResult(result1);
+		if (1 == 1) {
+//            return;
+		}
+
+//		File file = new File(DEST);
+//		file.getParentFile().mkdirs();
 		// manipulatePdf(SRC,
 		// "/Users/jianghui/Downloads/20171009_0901_010_15000082040406-11.pdf");
 		// new
@@ -441,8 +648,69 @@ public class PDFTest {
 		// new
 		// PDFTest().extractContent("/Users/jianghui/Downloads/20171009_0901_010_15000082040406-new.pdf");
 		// new PDFTest().parse();
-		new PDFTest().pdfSplitedBy3(SRC);
+
+//		IOFileFilter fileFilter = new IOFileFilter() {
+//
+//			@Override
+//			public boolean accept(File dir, String name) {
+//				if (name.startsWith("15000092918271")) {
+//					return true;
+//				} else {
+//					return false;
+//				}
+//			}
+//
+//			@Override
+//			public boolean accept(File file) {
+//				if (file.isDirectory() && file.getName().startsWith("15000092918271")) {
+//					return true;
+//				} else {
+//					return false;
+//				}
+//			}
+//		};
+		//
+		Collection<File> listFiles = FileUtils.listFilesAndDirs(new File("/Users/jianghui/Downloads/平安爱洋回单凭证-0411"), FileFilterUtils.trueFileFilter(), FileFilterUtils.trueFileFilter());
+//		Collection<File> listFiles = FileUtils.listFiles(new File("/Users/jianghui/Downloads/平安爱洋回单凭证-0411"), fileFilter, null );
+		System.out.println(listFiles);
+		for (Iterator iterator = listFiles.iterator(); iterator.hasNext();) {
+			File file = (File) iterator.next();
+			if (file.isDirectory() && file.getName().startsWith("15000092918271")) {
+				System.out.println("\n" + file.getAbsolutePath());
+				IOFileFilter fileFilter = new IOFileFilter() {
+
+					@Override
+					public boolean accept(File dir, String name) {
+						// TODO Auto-generated method stub
+						return false;
+					}
+
+					@Override
+					public boolean accept(File file) {
+						if (file.getName().indexOf("_010_") != -1) {
+							return true;
+						} else {
+							return false;
+						}
+					}
+				};
+				Collection<File> listFiles2 = FileUtils.listFiles(file, fileFilter, null);
+				System.out.println(listFiles2);
+
+				long start1 = System.currentTimeMillis();
+				pdfTest.pdfSplitedBy3(listFiles2.iterator().next(), result1);
+				System.out.println("单条耗时：" + (System.currentTimeMillis() - start1) / 1000);
+			}
+		}
+		System.out.println("\n总共耗时：" + (System.currentTimeMillis() - start) / 1000);
+		if (1 == 1) {
+			return;
+		}
+
+		File srcFile = new File("/Users/jianghui/Downloads/平安爱洋回单凭证-0411/15000092918271_20180801-20180831/20190411_0901_010_15000092918271.pdf");
+		pdfTest.pdfSplitedBy3(srcFile, result1);
 		// extractImage();
 		// extractContent2("/Users/jianghui/Downloads/20171009_0901_010_15000082040406-1.pdf");
+
 	}
 }
