@@ -2,14 +2,23 @@ package com.sky.allinone.redis;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.endsWith;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -17,9 +26,13 @@ import org.springframework.data.redis.core.BoundValueOperations;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.ResourceUtils;
 
 import com.sky.allinone.dao.entity.GradeEvent;
 import com.sky.allinone.service.RedisService;
@@ -27,6 +40,7 @@ import com.sky.allinone.service.RedisService;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class RedisTest {
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private RedisService redisService;
 	
@@ -55,6 +69,56 @@ public class RedisTest {
 		
 		redisTemplate.delete("who");
 		assertThat(redisTemplate.hasKey("who")).isFalse();
+	}
+	
+	/**
+	 * 测试lua脚本
+	 */
+	@Test
+	public void testLua() {
+//		DefaultRedisScript<Set<TypedTuple<String>>> redisScript = new DefaultRedisScript<Set<TypedTuple<String>>>();
+		DefaultRedisScript<List> redisScript = new DefaultRedisScript<List>();
+		org.springframework.core.io.Resource scriptLocation = new ClassPathResource("lua/zset.lua");
+		redisScript.setLocation(scriptLocation);
+		redisScript.setResultType(List.class);
+		
+		List<String> list = new ArrayList<>();
+		list.add("myzset:processingset");
+		list.add("myzset:initset");
+		final Integer limit = 100;
+//		Set<TypedTuple<String>> elements = stringRedisTemplate.execute(redisScript, list, 0,limit,"WITHSCORES");
+//		redisTemplate.execute(redisScript, list, new Object[]{ new Integer(0), limit});
+		
+		final List<String> execute = stringRedisTemplate.<List>execute(redisScript, list, String.valueOf(0), String.valueOf(limit));
+		System.out.println(execute);
+		
+//		redisTemplate.execute(new RedisScript<Set>() {
+//			
+//			@Override
+//			public String getSha1() {
+//				// TODO Auto-generated method stub
+//				return null;
+//			}
+//			
+//			@Override
+//			public Class getResultType() {
+//				return Set.class;
+//			}
+//			
+//			@Override
+//			public String getScriptAsString() {
+//				try {
+//					return FileUtils.readFileToString(scriptLocation.getFile());
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				
+//				return "";
+//			}
+//		}, list, new Object[]{ limit, "WITHSCORES"});
+		
+//		logger.info(elements.toString());
 	}
 	
 	/**
@@ -128,11 +192,30 @@ public class RedisTest {
 	}
 	
 	/**
-	 * 还有很多功能没有测试，具体可以参看官方文档
+	 * 还有很多功能没有测试，具体可以参看官方文档，或者参考《redis开发与运维》
 	 * 比如：sentinel模式、集群模式、各种数据类型的测试、pipeline、lua、事务等
 	 */
 	@Test
 	public void testTodo() {
+		/*
+		 * 数据结构：
+		 * BitMap：本质上也是string，只不过可以对位进行操作。如果初始容量过大，可能会造成redis阻塞。场景：独立访问用户总量，将每个用户的id映射到一个位上。
+		 * HyperLogLog：极小的空间完成独立总数的计算。
+		 */
 		
+		/*
+		 * 缓存和数据库一致性：
+		 * 1、先删除缓存，再更新数据库。问题：更新数据库之前，读取缓存会引入脏数据。
+		 * 2、先更新数据库，成功后，删除缓存。问题：删除缓存，事务还没提交前，读取缓存会引入脏数据。
+		 * 3、只更新缓存，不更新数据库，异步批量同步到数据库。
+		 * 4、强一致性。使用二阶段提交或者分布式锁。前者是分布式事务，后者是防止并发读取或者修改。
+		 */
+		
+		/*
+		 * 缓存击穿：
+		 * 缓存穿透：访问不存在的值，访问压力直接打向数据库。解决：缓存空值并设置过期时间；或使用布隆过滤器。
+		 * 缓存击穿：也就是”热点key重建优化“。热点key失效后，大量线程访问数据库重建这个key。解决：设置互斥锁（不要并发重建）；或不设置过期时间。
+		 * 雪崩优化：redis挂了后，流量全打向数据库。解决：缓存服务高可用，限流、降级。
+		 */
 	}
 }

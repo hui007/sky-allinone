@@ -36,7 +36,7 @@ import org.springframework.util.StringUtils;
 // 不使用mybatis的MapperScan。并且不能扫描到CustomBaseMapper，否则会报错
 @tk.mybatis.spring.annotation.MapperScan(basePackages = "com.sky.allinone.dao.mapper")
 // 引入elasticSearch
-@EnableElasticsearchRepositories(basePackages = "com.sky.allinone.elasticsearch.repositories")
+//@EnableElasticsearchRepositories(basePackages = "com.sky.allinone.elasticsearch.repositories")
 // 演示引入xml配置文件
 @ImportResource(locations={"classpath:application-bean.xml"})
 public class SkyAllinoneApplication {

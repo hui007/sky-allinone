@@ -211,6 +211,35 @@ public class SpringMvcTest {
 			.andExpect(status().is3xxRedirection());
 	}
 	
+	@Test
+	public void testCookie() throws Exception {
+		/*
+		 * 过期时间：默认等于浏览器的会话时间。浏览器关闭后，就过期。
+		 */
+		
+		/*
+		 * session共享：
+		 * session复制：有专门的复制中间件；tomcat本身也有提供复制能力。缺点：浪费存储空间和网络带宽。
+		 * 集中存储：第三方服务统一存储。比如数据库、缓存数据库等；或重写tomcat的session机制，将session集中存储。
+		 * 
+		 * JWT方案：目前用的比较多的
+		 * JWT规范：header、payload、signature
+		 * 时序：客户端登录、服务端生成token、客户端接收到登录token、后续通讯校验token
+		 */
+	}
+	
+	@Test
+	public void testSecurity() throws Exception {
+		/*
+		 * XSS攻击：https://www.youtube.com/watch?v=QJzkifQ-Cuk XSS 原理和攻防 - Web 安全常识
+		 * 
+		 */
+		
+		/*
+		 * CSRF攻击：https://www.youtube.com/watch?v=gEPii2y3ISQ CSRF 攻击和防御 - Web 安全常识
+		 */
+	}
+	
 	/**
 	 * 测试生成PDF-普通文本
 	 * @throws DocumentException 

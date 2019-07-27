@@ -1,5 +1,7 @@
 package com.sky.allinone.mvc.controller;
 
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +18,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -136,6 +141,31 @@ public class RestfulController {
 	@RequestMapping(value = "wx/app/async/pay3", method = RequestMethod.POST)
 	public String wxAppCallback3(@RequestBody String xml, HttpServletRequest request, HttpServletResponse response) {
 		logger.info("接收到微信app支付异步通知2。xmlStr：{}");
+		
+		return "success";
+	}
+	
+	/**
+	 * 校验入参：使用javax的校验api，然后通过springboot引入这个api的实现hibernate validate
+	 * 可以通过配置文件配置校验不通过的message信息，也可以做分组校验（group）
+	 * @param gradeEvent
+	 * @param errors
+	 * @return
+	 */
+	@RequestMapping(value="testValidate", method=POST) 
+	public String validate(@Validated GradeEvent gradeEvent, Errors errors) {
+//		errors.getAllErrors().stream().forEach(new Consumer<ObjectError>() {
+//
+//			@Override
+//			public void accept(ObjectError t) {
+//				logger.warn("getObjectName:{}, getDefaultMessage:{}", t.getObjectName(), t.getDefaultMessage());
+//			}
+//		});
+		errors.getAllErrors().stream().forEach(t -> logger.warn("getObjectName:{}, getDefaultMessage:{}", t.getObjectName(), t.getDefaultMessage()));
+		
+		if (errors.hasErrors()) {
+			return "saveGradeEvent";
+		}
 		
 		return "success";
 	}

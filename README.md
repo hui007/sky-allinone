@@ -8,3 +8,6 @@ mybatis多数据源动态切换：MybatisSpringBootMultiDSTest。还需解决分
 mybatis Common mapper方式：MybatisSpringBootCommonMapperTest <br>
 mybatis自动生成代码：MybatisGenTest <br>
 mybatis所有功能测试入口类：SuiteTest <br>
+
+待实现功能：
+redis lua脚本

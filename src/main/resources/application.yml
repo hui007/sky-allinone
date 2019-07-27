@@ -34,11 +34,11 @@ spring:
     consumer:
       group-id: joshuiConsumerGroup
       auto-offset-reset: earliest #to ensure the new consumer group will get the messages we just sent, because the container might start after the sends have completed.
-  data:
-    elasticsearch: #如果不配置这个，就使用内嵌的es服务器
-      cluster-nodes: localhost:9300 # Transport Client默认使用9300端口
-      repositories:
-        enabled: true #这个开关决定是否实例化repository。如果这个开关为true，即使不加这个注解@EnableElasticsearchRepositories，repository依然会实例化，会导致去连接es服务器
+#  data:
+#    elasticsearch: #如果不配置这个，就使用内嵌的es服务器
+#      cluster-nodes: localhost:9300 # Transport Client默认使用9300端口
+#      repositories:
+#        enabled: true #这个开关决定是否实例化repository。如果这个开关为true，即使不加这个注解@EnableElasticsearchRepositories，repository依然会实例化，会导致去连接es服务器
 security: #actuator配置
   user:
     name: user

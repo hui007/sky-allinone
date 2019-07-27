@@ -1,5 +1,8 @@
 package com.sky.allinone.mvc.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -15,10 +18,16 @@ import com.sky.allinone.mvc.exception.CommonException;
  * @author joshui
  *
  */
-@ControllerAdvice
+@ControllerAdvice(basePackageClasses = RestfulController.class)
 public class CommonControllerAdvice {
 	@ExceptionHandler(CommonException.class) 
-	public String handlerMethodException() {
+	public String handleMethodException(HttpServletRequest request, Throwable ex) {
+		
+		return "dealedCommonException";
+	}
+	
+	@ExceptionHandler(BindException.class) 
+	public String handleValidateException() {
 		
 		return "dealedCommonException";
 	}
