@@ -9,7 +9,7 @@ import com.sky.allinone.cicd.CICDTest;
 import com.sky.allinone.elasticsearch.ElasticsearchTest;
 import com.sky.allinone.email.EmailTest;
 import com.sky.allinone.java.JavaSuiteTest;
-import com.sky.allinone.java.file.JavaTest;
+import com.sky.allinone.java.JavaTest;
 import com.sky.allinone.java.file.PDFTest;
 import com.sky.allinone.jmx.JmxTest;
 import com.sky.allinone.kafka.KafkaTest;

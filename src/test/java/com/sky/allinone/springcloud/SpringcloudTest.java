@@ -50,5 +50,15 @@ public class SpringcloudTest {
 		 * ribbon：
 		 * 使用方式：引入jar、加注解到resttemplate上，自动实现了负载均衡
 		 */
+		
+		/*
+		 * slueth：
+		 * 	log变更：引入slueth后，log里会加上应用名称、spanId等信息。是通过调用MDC.put放进去的，在dispatchServlet之前就已经放进去了。
+		 * 	APM工具对比：应用程序性能管理。zipkin、skywalking、CAT、Pinpoint
+		 * 	zipkin：server服务器、UI控制器、
+		 * 	上报方式：
+		 * 		http方式（会有延迟，生产环境一般不这么用）、
+		 * 		spring cloud stream方式（消息机制）：zipkin服务器可重启，不会丢消息，因为消息持久化到kafka了
+		 */
 	}
 }

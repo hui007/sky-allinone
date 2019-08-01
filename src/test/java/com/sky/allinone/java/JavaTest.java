@@ -1,4 +1,4 @@
-package com.sky.allinone.java.file;
+package com.sky.allinone.java;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -18,17 +18,17 @@ import java.util.stream.Stream;
 public class JavaTest {
 	/*
 	 * TODO:
+	 * 堆栈：
+	 * 	获取：StackTraceElement[] callStack = Thread.currentThread().getStackTrace()
+	 * 
 	 * 阿里巴巴开发手册（终极版）：
 	 * 
 	 * jaxb
 	 * 
 	 * fastjson：
-	 * 私人定制
-	 * 在getxxx方法内如果再次嵌套使用fastjson作json转换，就会无限循环。getJson(){ return JSON.toJSONString(this); }   
-	 */
-	/*
-	 * fastjson:
-	 * T body = JSON.parseObject(respBody, new TypeReference<T>(){});
+	 * 	私人定制
+	 * 	在getxxx方法内如果再次嵌套使用fastjson作json转换，就会无限循环。getJson(){ return JSON.toJSONString(this); }   
+	 * 	T body = JSON.parseObject(respBody, new TypeReference<T>(){});
 	 */
 	
 	

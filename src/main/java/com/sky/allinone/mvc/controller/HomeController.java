@@ -62,6 +62,8 @@ public class HomeController {
 	 * 拦截根目录，这样就没办法通过浏览器访问static下的静态资源了;
 	 * 也导致访问根目录时，不能自动跳转到index.html页面了
 	 * 
+	 * 如果类里没有声明映射"/"，则这个方法可以拦截“主地址”和“主地址/”两种url
+	 * 
 	 * 也可以通过spring Security来做安全过滤
 	 * @return
 	 */
