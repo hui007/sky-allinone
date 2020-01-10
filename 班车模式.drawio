@@ -1,4 +1,4 @@
-<mxfile host="www.draw.io" modified="2020-01-10T03:44:56.201Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36" etag="lMmzey2ZiGdLby_Pi2Qc" version="12.5.1" type="github">
+<mxfile host="www.draw.io" modified="2020-01-10T03:48:34.953Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36" etag="4yl5AyFt0X48Y7G_nDa4" version="12.5.1" type="github">
   <diagram name="Page-1" id="13e1069c-82ec-6db2-03f1-153e76fe0fe0">
     <mxGraphModel dx="1026" dy="488" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="#ffffff" math="0" shadow="0">
       <root>
@@ -81,6 +81,32 @@
             <mxPoint x="50" y="450" as="sourcePoint"/>
             <Array as="points">
               <mxPoint x="75" y="450"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AudPGrHjciKhYhIXOKgS-19" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="7baba1c4bc27f4b0-4">
+          <mxGeometry x="55" y="520" width="10" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="AudPGrHjciKhYhIXOKgS-20" value="按照间隔时间发车" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;entryX=1;entryY=0;exitX=0.9;exitY=0.132;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" target="AudPGrHjciKhYhIXOKgS-19" parent="7baba1c4bc27f4b0-4" source="AudPGrHjciKhYhIXOKgS-17">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="60" y="500" as="sourcePoint"/>
+            <Array as="points">
+              <mxPoint x="54" y="500"/>
+              <mxPoint x="85" y="500"/>
+              <mxPoint x="85" y="520"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AudPGrHjciKhYhIXOKgS-21" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="7baba1c4bc27f4b0-4">
+          <mxGeometry x="55" y="600" width="10" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="AudPGrHjciKhYhIXOKgS-22" value="或按照订单量发车" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;entryX=1;entryY=0;exitX=1;exitY=0.505;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" target="AudPGrHjciKhYhIXOKgS-21" parent="7baba1c4bc27f4b0-4" source="AudPGrHjciKhYhIXOKgS-17">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="60" y="580" as="sourcePoint"/>
+            <Array as="points">
+              <mxPoint x="55" y="580"/>
+              <mxPoint x="85" y="580"/>
+              <mxPoint x="85" y="600"/>
             </Array>
           </mxGeometry>
         </mxCell>
